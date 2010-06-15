@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="utf-8"?>
+<install type="component" version="1.5.0" method="upgrade">
+ <name>HEC Mailing</name>
+ <!-- The following elements are optional and free of formatting conttraints -->
+ <creationDate>Feb 2010</creationDate>
+ <author>Herve CYR</author>
+ <authorEmail>dev@hecsoft.net</authorEmail>
+ <authorUrl>http://www.hecsoft.net</authorUrl>
+ <copyright>(c) Hecsoft 2009-2010</copyright>
+ <license>GNU General Public License</license>
+ <!--  The version string is recorded in the components table -->
+ <version>0.9.0</version>
+ <!-- The description is optional and defaults to the name -->
+ <description>Composant d'envoi de mail (Liste de diffusion)/ Mailing list component</description>
+ <installfile>install.hecmailing.php</installfile>
+ <!-- Site Main File Copy Section -->
+ <!-- Note the folder attribute: This attribute describes the folder
+      to copy FROM in the package to install therefore files copied
+      in this section are copied from /site/ in the package -->
+  
+ <files>
+  <filename>controller.php</filename>
+  <filename>hecmailing.php</filename>
+  <filename>release_note.txt</filename>
+  <filename>index.html</filename>
+  <filename>views/index.html</filename>
+  <filename>views/form/index.html</filename>
+  <filename>views/form/view.html.php</filename>
+  <filename>views/form/tmpl/default.php</filename>
+  <filename>views/form/tmpl/index.html</filename>
+   <filename>views/contact/index.html</filename>
+  <filename>views/contact/view.html.php</filename>
+  <filename>views/contact/tmpl/default.php</filename>
+  <filename>views/contact/tmpl/index.html</filename>
+  <filename>views/log/index.html</filename>
+  <filename>views/log/view.html.php</filename>
+  <filename>views/log/tmpl/default.php</filename>
+  <filename>views/log/tmpl/index.html</filename>
+  <filename>views/logdetail/index.html</filename>
+  <filename>views/logdetail/view.html.php</filename>
+  <filename>views/logdetail/tmpl/default.php</filename>
+  <filename>views/logdetail/tmpl/index.html</filename>
+  <filename>models/form.php</filename>
+  <filename>models/contact.php</filename>
+  <filename>models/log.php</filename>
+  <filename>models/logdetail.php</filename>
+  <filename>models/index.html</filename>
+  <filename>images/index.html</filename>
+  <filename>images/toolbar/index.html</filename>
+  <filename>images/toolbar/icon-32-archive.png</filename>
+  <filename>images/toolbar/icon-32-apply.png</filename>
+  <filename>images/toolbar/icon-32-cancel.png</filename>
+  <filename>images/toolbar/icon-32-config.png</filename>
+  <filename>images/toolbar/icon-32-default.png</filename>
+  <filename>images/toolbar/icon-32-edit.png</filename>
+  <filename>images/toolbar/icon-32-download.png</filename>
+  <filename>images/toolbar/icon-32-help.png</filename>
+  <filename>images/toolbar/icon-32-new.png</filename>
+  <filename>images/toolbar/icon-32-save.png</filename>
+  <filename>images/toolbar/icon-32-send.png</filename>
+  <filename>images/toolbar/icon-32-log.png</filename>
+  <filename>images/cancel16.png</filename>
+  <filename>images/hecmailing16x16.png</filename>
+  <filename>images/hecmailing32x32.png</filename>
+  <filename>images/hecmailing48x48.png</filename>
+  <filename>images/corbeille.gif</filename>
+  <filename>images/disk.gif</filename>
+  <filename>images/edit_user.gif</filename>
+  <filename>images/email64.png</filename>
+  <filename>images/email16.png</filename>
+  <filename>images/group16.png</filename>
+  <filename>images/group64.png</filename>
+  <filename>images/head.png</filename>
+  <filename>images/maison.png</filename>
+  <filename>images/new_user.gif</filename>
+  <filename>images/ok16.png</filename>
+  <filename>images/poubelle16.png</filename>
+  <filename>images/poubelle64.png</filename>
+  <filename>images/tick.png</filename>
+  <filename>images/user16.png</filename>
+  <filename>images/user64.png</filename>
+  <filename>images/folder.gif</filename>
+  <filename>images/ajax-loader.gif</filename>
+  <filename>css/index.html</filename>
+  <filename>css/theme.css</filename>
+  <filename>css/toolbar.css</filename>
+ <filename>css/dialog.css</filename>
+ <filename>libraries/getDir.php</filename>
+ <filename>libraries/index.html</filename>
+ <filename>libraries/jt/index.html</filename>
+ <filename>libraries/jt/jt_DialogBox.css</filename>
+ <filename>libraries/jt/veils.css</filename>
+ <filename>libraries/jt/jt_.js</filename>
+ <filename>libraries/jt/dom-drag.js</filename>
+ <filename>libraries/jt/jt_AppDialogs.js</filename>
+ <filename>libraries/jt/jt_DialogBox.js</filename>
+ <filename>libraries/jt/dialogTL.gif</filename>
+ <filename>libraries/jt/dialogTM.gif</filename>
+ <filename>libraries/jt/dialogTR.gif</filename>
+ <filename>libraries/jt/window_close.gif</filename>
+ 
+ <filename>libraries/recaptcha/index.html</filename>
+ <filename>libraries/recaptcha/LICENSE</filename>
+ <filename>libraries/recaptcha/README</filename>
+ <filename>libraries/recaptcha/recaptchalib.php</filename>
+ </files>
+ <install>
+    <queries>
+      <query>CREATE TABLE IF NOT EXISTS `#__hecmailing_groupdetail` (
+  				`grp_id_groupe` int(11) NOT NULL COMMENT 'Id du groupe',
+  				`gdet_cd_type` tinyint(4) NOT NULL COMMENT 'Type de detail (1 : UserName, 2 : UserId, 3 : UserType, 4 : E-mail)',
+  				`gdet_id_value` int(11) NOT NULL COMMENT 'Code de la valeur',
+  				`gdet_vl_value` varchar(50) NOT NULL COMMENT 'E Mail...',
+  				`gdet_id_detail` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Identifiant unique',
+				PRIMARY KEY (`gdet_id_detail`),
+  				KEY `grp_id_groupe` (`grp_id_groupe`)
+					) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='Detail des groupe de diffusion'
+			</query>
+  		<query>CREATE TABLE IF NOT EXISTS `#__hecmailing_groups` (
+  				`grp_id_groupe` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Id du groupe',
+  				`grp_nm_groupe` varchar(30) NOT NULL COMMENT 'nom du groupe',
+  				`grp_cm_groupe` varchar(250) NOT NULL COMMENT 'Commentaires',
+  				published tinyint(4)   NOT NULL default '1' COMMENT '1=Publie/0=Non Publie',
+  				PRIMARY KEY (`grp_id_groupe`)
+					) ENGINE=MyISAM  DEFAULT CHARSET=latin1 COMMENT='Liste des groupes de mailing'
+			</query>
+  		<query>CREATE TABLE IF NOT EXISTS `#__hecmailing_save` (
+  				`msg_id_message` int(11) NOT NULL AUTO_INCREMENT,
+  				`msg_lb_message` varchar(30) NOT NULL,
+  				`msg_vl_subject` varchar(200) NOT NULL,
+  				`msg_vl_body` text NOT NULL,
+  				`msg_vl_from` varchar(150) NOT NULL,
+  				`grp_id_groupe` int(11) NOT NULL,
+  				PRIMARY KEY (`msg_id_message`),
+				  KEY `grp_id_groupe` (`grp_id_groupe`)
+				) ENGINE=MyISAM  DEFAULT CHARSET=latin1 COMMENT='Modeles de mail'</query>
+			<query>CREATE TABLE IF NOT EXISTS `#__hecmailing_log` (
+  				`log_id_message` int(11) NOT NULL AUTO_INCREMENT,
+  				`log_dt_sent` datetime NOT NULL,
+  				`log_vl_subject` varchar(200) NOT NULL,
+  				`log_vl_body` text NOT NULL,
+  				`log_vl_from` varchar(150) NOT NULL,
+  				`grp_id_groupe` int(11) NOT NULL,
+  				usr_id_user int(11) NOT NULL,
+  				log_bl_useprofil smallint NULL,
+  				log_nb_ok int(11) NOT NULL,
+  				log_nb_errors int(11) NOT NULL,
+  				log_vl_mailok text NULL,
+  				log_vl_mailerr text NULL,
+  				PRIMARY KEY (`log_id_message`),
+				  KEY `grp_id_groupe` (`grp_id_groupe`)
+				) ENGINE=MyISAM  DEFAULT CHARSET=latin1 COMMENT='Log des mails envoyes'</query>
+				<query>CREATE TABLE IF NOT EXISTS `#__hecmailing_log_attachment` (
+  				`log_id_message` int(11) NOT NULL,
+  				`log_nm_file` varchar(250) NOT NULL,
+  				PRIMARY KEY (`log_id_message`, log_nm_file)
+  				) ENGINE=MyISAM  DEFAULT CHARSET=latin1 COMMENT='Pieces jointes des mails envoyes'
+  			</query>	
+				<query>CREATE TABLE IF NOT EXISTS #__hecmailing_contact (
+  				ct_id_contact int(11) NOT NULL AUTO_INCREMENT COMMENT 'Identifiant du contact',
+  				grp_id_groupe int(11) NOT NULL COMMENT 'Identifiant du groupe associe',
+  				ct_nm_contact varchar(30) NOT NULL COMMENT 'nom du contact',
+  				ct_cm_contact varchar(250) NULL COMMENT 'Descriptif du contact',
+  				ct_vl_info Text   NULL COMMENT 'Infos du contact',
+  				PRIMARY KEY (`ct_id_contact`),
+				KEY `grp_id_groupe` (`grp_id_groupe`)
+  				) ENGINE=MyISAM  DEFAULT CHARSET=latin1 COMMENT='Info contact'
+  				</query>
+     </queries>
+	</install>
+ <languages>
+    <language tag="fr-FR">fr-FR.com_hecmailing.ini</language>
+    <language tag="en-GB">en-GB.com_hecmailing.ini</language>
+	<language tag="de-DE">de-DE.com_hecmailing.ini</language>
+  </languages>
+ <administration>
+  <!-- Administration Menu Section -->
+  <menu img="components/com_hecmailing/hecmailing16x16.png">HEC Mailing</menu>
+ 
+  <!-- Administration Main File Copy Section -->
+  <files folder="admin">
+   <filename>admin.hecmailing.html.php</filename>
+   <filename>admin.hecmailing.php</filename>
+   <filename>toolbar.hecmailing.html.php</filename>
+   <filename>toolbar.hecmailing.php</filename>
+   <filename>config.xml</filename>
+   <filename>index.html</filename>
+   <filename>tables/index.html</filename>
+   <filename>tables/groupe.php</filename>
+   <filename>tables/contact.php</filename>
+   <filename>hecmailing.css</filename>
+   <filename>hecmailing16x16.png</filename>
+   <filename>install.hecmailing.php</filename>
+   <filename>update.php</filename>
+  </files>  
+ 	 <languages folder="admin">
+    <language tag="fr-FR">fr-FR.com_hecmailing.ini</language>
+    <language tag="en-GB">en-GB.com_hecmailing.ini</language>
+  </languages>
+ </administration>
+</install>
