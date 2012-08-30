@@ -1,4 +1,27 @@
-<?php 
+<?php
+/**
+* @version 0.13.4
+* @package hecMailing for Joomla
+* @subpackage : View Form (Sending mail form)
+* @module views.form.tmpl.view.html.php
+* @copyright Copyright (C) 2008-2011 Hecsoft All rights reserved.
+* @license GNU/GPL
+*
+* This program is free software; you can redistribute it and/or modify
+* it under the terms of the GNU General Public License as published by
+* the Free Software Foundation; either version 2 of the License, or
+* (at your option) any later version.
+* 
+* This program is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+* GNU General Public License for more details.
+* 
+* You should have received a copy of the GNU General Public License
+* along with this program; if not, write to the Free Software
+* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+*/
+ 
 defined('_JEXEC') or die ('restricted access'); 
 
 jimport('joomla.application.component.view'); 
@@ -8,13 +31,14 @@ class hecMailingViewForm extends JView
     
    function display ($tpl=null) 
    { 
-      global $option,$mainframe; 
+		// Modif Joomla 1.6+
+		$mainframe = JFactory::getApplication();
      
    
-      $currentuser= &JFactory::getUser();
-      $pparams = &$mainframe->getParams();
+		$currentuser= &JFactory::getUser();
+		$pparams = &$mainframe->getParams();
 			
-			$model = & $this->getModel(); 
+	  $model = & $this->getModel(); 
       $groupe=0; 
       if ($pparams->get('send_all','0')=='1')
       {
@@ -65,6 +89,7 @@ class hecMailingViewForm extends JView
       }
      
    	  $send_all =$pparams->get('send_all','0');
+   	  $upload_input_count =$pparams->get('attach_input_count','0');
       
       $browse_path = $pparams->get('browse_path','/images/stories');
       $height = $pparams->get('edit_width','400');
@@ -73,12 +98,14 @@ class hecMailingViewForm extends JView
       $groupelist = $model->getGroupes($send_all,false, $askselect);
       if (!$groupelist)
       {
-        $groupes = JText::_("NO_GROUP");
+        $groupes = JText::_("COM_HECMAILING_NO_GROUP");
+        
       }
       else
       {
         
-        $groupes = JHTML::_('select.genericlist',  $groupelist, 'groupe', 'class="inputbox" size="1"', 'grp_id_groupe', 'grp_nm_groupe', intval($groupe));
+        $groupes = JHTML::_('select.genericlist',  $groupelist[0], 'groupe', 'class="inputbox" size="1" onchange="showManageButton(this)"', 'grp_id_groupe', 'grp_nm_groupe', intval($groupe));
+        $rights = "var rights={".join(",",$groupelist[1])."};";
       }
       
       $tmpfrom = $model->getFrom();
@@ -116,13 +143,22 @@ class hecMailingViewForm extends JView
       }
       else
       {
+      	$body="";
+      	$subject="";
       	$att=array();
+      
+      	$this->assignRef('idmsg', $idmsg);
+        $this->assignRef('subject', $subject);
+        $this->assignRef('body', $body);
       	$this->assignRef('attachment',$att);
       }
-  
+  		$msg='';
+  		$this->assignRef('msg', $msg);
       $this->assignRef('groupes', $groupes);
+      $this->assignRef('rights', $rights);
       $this->assignRef('from', $from);
       $this->assignRef('default_use_profil', $default_use_profil);
+      $this->assignRef('upload_input_count', intval($upload_input_count));
       $this->assignRef('saved', $saved);
       $this->assignRef('height', $height);
       $this->assignRef('width', $width);

@@ -34,7 +34,15 @@ switch ($task)
 	case 'newContact':
     TOOLBAR_hecmailing::_EDITCONTACT(false);
 		break;
+  
+	case 'param':
+	
+		TOOLBAR_hecmailing::_PARAM();
+		break;
+	case 'groups':
+    TOOLBAR_hecmailing::_GROUPS();
+		break;
 	default:
-		TOOLBAR_hecmailing::_DEFAULT();
+    TOOLBAR_hecmailing::_DEFAULT();
 		break;
 }

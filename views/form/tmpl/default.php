@@ -1,36 +1,58 @@
 <?php 
-
+/**
+* @version 1.7.0
+* @package hecMailing for Joomla
+* @module views.form.tmpl.default.php
+* @subpackage : View Form (Sending mail form)
+* @copyright Copyright (C) 2008-2011 Hecsoft All rights reserved.
+* @license GNU/GPL
+*
+* This program is free software; you can redistribute it and/or modify
+* it under the terms of the GNU General Public License as published by
+* the Free Software Foundation; either version 2 of the License, or
+* (at your option) any later version.
+* 
+* This program is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+* GNU General Public License for more details.
+* 
+* You should have received a copy of the GNU General Public License
+* along with this program; if not, write to the Free Software
+* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+*/
 defined ('_JEXEC') or die ('restricted access'); 
 jimport('joomla.html.html');
-$mainframe->addCustomHeadTag ('<link rel="stylesheet" href="components/com_hecmailing/css/toolbar.css" type="text/css" media="screen" />');
-$mainframe->addCustomHeadTag ('<link rel="stylesheet" href="components/com_hecmailing/css/dialog.css" type="text/css" media="screen" />');
-$mainframe->addCustomHeadTag ('<link rel="stylesheet" href="components/com_hecmailing/libraries/jt/jt_DialogBox.css" type="text/css" />');
-$mainframe->addCustomHeadTag ('<script src="components/com_hecmailing/libraries/jt/dom-drag.js" type="text/javascript"></script>');
+// Modif Joomla 1.6+
+$mainframe = JFactory::getApplication();
+$document = JFactory::getDocument();
+// Modif pour J1.6+ : change $mainframe->addCustomHeadTag en   $document->addCustomTag
+$document->addCustomTag('<link rel="stylesheet" href="components/com_hecmailing/css/toolbar.css" type="text/css" media="screen" />');
+$document->addCustomTag('<link rel="stylesheet" href="components/com_hecmailing/css/dialog.css" type="text/css" media="screen" />');
+$document->addCustomTag ('<link rel="stylesheet" href="components/com_hecmailing/libraries/jt/jt_DialogBox.css" type="text/css" />');
+$document->addCustomTag ('<script src="components/com_hecmailing/libraries/jt/dom-drag.js" type="text/javascript"></script>');
 //echo '<script src="components/com_hecmailing/libraries/jt/dom-drag.js" type="text/javascript"></script>\n';
-$mainframe->addCustomHeadTag ('<script src="components/com_hecmailing/libraries/jt/jt_.js" type="text/javascript"></script>');
+$document->addCustomTag ('<script src="components/com_hecmailing/libraries/jt/jt_.js" type="text/javascript"></script>');
 //echo '<script src="components/com_hecmailing/libraries/jt/jt_.js" type="text/javascript"></script>';
-$mainframe->addCustomHeadTag ('<script src="components/com_hecmailing/libraries/jt/jt_DialogBox.js" type="text/javascript"></script>');
+$document->addCustomTag ('<script src="components/com_hecmailing/libraries/jt/jt_DialogBox.js" type="text/javascript"></script>');
 //echo '<script src="components/com_hecmailing/libraries/jt/jt_DialogBox.js" type="text/javascript"></script>';
-$mainframe->addCustomHeadTag ('<link rel="stylesheet" href="components/com_hecmailing/libraries/jt/veils.css" type="text/css" />');
-
+$document->addCustomTag ('<link rel="stylesheet" href="components/com_hecmailing/libraries/jt/veils.css" type="text/css" />');
 //$mainframe->addCustomHeadTag ('<script src="components/com_hecmailing/libraries/jt/jt_AppDialogs.js" type="text/javascript"></script>');
 //$mainframe->addCustomHeadTag ('<script src="components/com_hecmailing/libraries/jt/MyApp_dialogs.js" type="text/javascript"></script>');
-
 ?>
 
 <style type="text/css">
 .liste{
-	
 	text-align:left;
 	border:1px solid #4FBAB3;
 	white-space:nowrap;
 	font:normal 12px verdana;
 	background:#fff;
-	padding:5px;
-	overflow: auto;
+  padding:5px;
+  overflow: auto;
 	height:50px;
 }
- 
+
 .liste a{
 	display:block;
 	cursor:default;
@@ -38,258 +60,225 @@ $mainframe->addCustomHeadTag ('<link rel="stylesheet" href="components/com_hecma
 	text-decoration:none;
 	background:#fff;
 }
- 
+
 .liste a:hover{
 	color:white;
 	background-color:#7370CB;
 }
-
 </style>
+
 <div id="loadtmpl" class="hecdialog" >
-  <!--<div class="dlgheader"><h1><?php echo JText::_('LOAD_TEMPLATE'); ?></h1></div>-->
+  <!--<div class="dlgheader"><h1><?php echo JText::_('COM_HECMAILING_LOAD_TEMPLATE'); ?></h1></div>-->
   <div class="image"><img src="components/com_hecmailing/images/disk.gif" width="64px"></div>
   <div class="content"><center><br/>
-    <?php echo JText::_('SELECT_TEMPLATE_BELOW'); ?><br/><br/>
-<?php echo JText::_('TEMPLATE')." : ".$this->saved;?><br/><br/></center>
+    <?php echo JText::_('COM_HECMAILING_SELECT_TEMPLATE_BELOW'); ?><br/><br/>
+    <?php echo JText::_('COM_HECMAILING_TEMPLATE')." : ".$this->saved;?><br/><br/></center>
   </div>
   <div class="buttons"><center>
     <button onclick="javascript:loadTemplate();return false;">
-      <img src="components/com_hecmailing/images/ok16.png" ><?php echo JText::_('LOAD'); ?>
+      <img src="components/com_hecmailing/images/ok16.png" ><?php echo JText::_('COM_HECMAILING_LOAD'); ?>
     </button>
     <button onclick="javascript:cancel();return false;">
-      <img src="components/com_hecmailing/images/cancel16.png" ><?php echo JText::_('CANCEL'); ?>
+      <img src="components/com_hecmailing/images/cancel16.png" ><?php echo JText::_('COM_HECMAILING_CANCEL'); ?>
     </button></center>
   </div>
-  
 </div>
 <div id="savetmpl" class="hecdialog" >
-  <!--<div class="dlgheader"><h1><?php echo JText::_('SAVE_TEMPLATE'); ?></h1></div>-->
+  <!--<div class="dlgheader"><h1><?php echo JText::_('COM_HECMAILING_SAVE_TEMPLATE'); ?></h1></div>-->
   <div class="image"><img src="components/com_hecmailing/images/disk.gif" width="64px"></div>
   <div class="content"><center><br/>
-    <?php echo JText::_('SAVE_TEMPLATE_INFO'); ?><br/><br/>
-<?php echo JText::_('SAVE_TEMPLATE_LABEL') ?><input type="text" id="tmplName" Name="tmplName" /><br/><br/></center>
+    <?php echo JText::_('COM_HECMAILING_SAVE_TEMPLATE_INFO'); ?><br/><br/>
+    <?php echo JText::_('COM_HECMAILING_SAVE_TEMPLATE_LABEL') ?><input type="text" id="tmplName" Name="tmplName" /><br/><br/></center>
   </div>
   <div class="buttons"><center>
     <button onclick="javascript:saveTemplate();return false;">
-      <img src="components/com_hecmailing/images/ok16.png" ><?php echo JText::_('SAVE_TEMPLATE_BUTTON'); ?>
+      <img src="components/com_hecmailing/images/ok16.png" ><?php echo JText::_('COM_HECMAILING_SAVE_TEMPLATE_BUTTON'); ?>
     </button>
     <button onclick="javascript:cancelSaveTmpl();return false;">
-      <img src="components/com_hecmailing/images/cancel16.png" ><?php echo JText::_('CANCEL'); ?>
+      <img src="components/com_hecmailing/images/cancel16.png" ><?php echo JText::_('COM_HECMAILING_CANCEL'); ?>
     </button></center>
   </div>
-  
 </div>
 
 <div id="browse" class="hecdialog" style="height:470px;width:330px;" >
-  <!--<div class="dlgheader" style="width:320px" style="display:none;" ><h1><?php echo JText::_('BROWSE FILES'); ?></h1></div>-->
-  
+  <!--<div class="dlgheader" style="width:320px" style="display:none;" ><h1><?php echo JText::_('COM_HECMAILING_BROWSE_FILES'); ?></h1></div>-->
   <div class="content" style="height:390px;" ><div id="Path" style="height:20px;"></div><div id="CurrentDir" style="display:none;"></div>
-  	<!--<div class="image"><img src="components/com_hecmailing/images/disk.gif" width="64px"></div>-->
-  	
-    <div id="liste" name="liste" class="liste" style="width:300px;height:350px;">.<br>..
-    </div>
+ 	<!--<div class="image"><img src="components/com_hecmailing/images/disk.gif" width="64px"></div>-->
+    <div id="liste" name="liste" class="liste" style="width:300px;height:350px;">.<br>..</div>
   </div>
   <div class="buttons">
     <button onclick="javascript:selectFile();return false;">
-      <img src="components/com_hecmailing/images/ok16.png" ><?php echo JText::_('LOAD'); ?>
+      <img src="components/com_hecmailing/images/ok16.png" ><?php echo JText::_('COM_HECMAILING_LOAD'); ?>
     </button>
     <button onclick="javascript:hideBrowse();return false;">
-      <img src="components/com_hecmailing/images/cancel16.png" ><?php echo JText::_('CANCEL'); ?>
+      <img src="components/com_hecmailing/images/cancel16.png" ><?php echo JText::_('COM_HECMAILING_CANCEL'); ?>
     </button>
   </div>
-  
 </div>
 
 <div id="msgbox">
 <script language="javascript" type="text/javascript">
-
-jt_DialogBox.imagePath = 'components/com_hecmailing/libraries/jt/';
-var root_dir='<?php echo realpath(JPATH_ROOT).$this->browse_path; ?>';
+jt_DialogBox.imagePath = '<?php echo JURI::base( true ).'/components/com_hecmailing/libraries/jt/';?>';
 var base_dir='<?php echo $this->browse_path; ?>';
 
 function submitbutton2(pressbutton) {
     myform = document.getElementById("adminForm");;
     mytask = document.getElementById("task");
-    
     if (pressbutton) {
       mytask.value=pressbutton;
     }
-     if (typeof myform.onsubmit == "function") {
+    if (typeof myform.onsubmit == "function") {
         myform.onsubmit();
     }
+
     if (pressbutton == 'cancel') {
-            myform.submit();
-            return;
+        myform.submit();
+        return;
     }
-    
-    <?php
-            $editor =& JFactory::getEditor();
-            echo $editor->save( 'body' );
-    ?>
-    //alert('submit task='+document.getElementById("task").value);
-    myform.submit();
+  <?php
+    $editor =& JFactory::getEditor();
+    echo $editor->save( 'body' );
+  ?>
+
+  //alert('submit task='+document.getElementById("task").value);
+  myform.submit();
 }
+
 function loadTemplate()
 {
 	iIdTemplate=document.getElementById("idTemplate");
 	dlgTemplateNode = dlgTemplate.getContentNode();
 	l = dlgTemplateNode.getElementsByTagName('select');
 	s = l[0];
-	
-	selected = s.options[s.selectedIndex].value;
-	if (selected>0)
-	{
-		iIdTemplate.value=selected;
-		submitbutton('load');
-	}
+  selected = s.options[s.selectedIndex].value;
+  if (selected>0)
+  {
+  		iIdTemplate.value=selected;
+  		submitbutton('load');
+  }
 }
 
 function saveTemplate()
 {
 	iSaveTemplate=document.getElementById("saveTemplate");
-	dlgSaveTemplateNode = dlgSaveTemplate.getContentNode();
-	l = dlgSaveTemplateNode.getElementsByTagName('input');
+  dlgSaveTemplateNode = dlgSaveTemplate.getContentNode();
+  l = dlgSaveTemplateNode.getElementsByTagName('input');
 	s = l[0];
-	
 	iSaveTemplate.value=s.value;
 	submitbutton('save');
-	
 }
 
-	function createContent(cid,title, width) {
-		
+function createContent(cid,title, width) {
 		try {
 			dlgbox = new jt_DialogBox(true);
 		}
 		catch (E) {
 			alert('Probleme creation Dialog ' + cid + ':' + E);
 		}
-		
 		content = document.getElementById(cid);
-		
 		dlgbox.setTitle(title);
 		dlgbox.setContent(content.innerHTML);
-		
 		dlgbox.setWidth(width);
-		dlgbox.moveTo(-1,-1);
-		
-		return (dlgbox);
-	}
-	
-	dlgBrowse = null;
-	dlgTemplate = null;
-	dlgSaveTemplate = null;
-	
-	
+  	dlgbox.moveTo(-1,-1);
+  	return (dlgbox);
+}
 
-	function showLoadTemplate()
-		{
-        if (dlgTemplate==null)
-    		dlgTemplate = createContent('loadtmpl','<?php echo JText::_('LOAD_TEMPLATE'); ?>', 400);    
-        dlgTemplate.show();
-      
-        return false;  
+dlgBrowse = null;
+dlgTemplate = null;
+dlgSaveTemplate = null;
+
+function showLoadTemplate()
+{
+  if (dlgTemplate==null)
+    dlgTemplate = createContent('loadtmpl','<?php echo JText::_('COM_HECMAILING_LOAD_TEMPLATE'); ?>', 400);    
+  dlgTemplate.show();
+ 	dlgTemplate.moveTo(-1,-1);
+  return false;  
+}
+
+function showSaveTemplate()
+{
+  if (dlgSaveTemplate==null)
+  	dlgSaveTemplate = createContent('savetmpl','<?php echo JText::_('COM_HECMAILING_SAVE_TEMPLATE'); ?>', 400);    
+  dlgSaveTemplate.show();
+  dlgSaveTemplate.moveTo(-1,-1);
+  return false;  
+}
+
+function cancelSaveTmpl()
+{
+  dlgSaveTemplate.hide();
+}
+
+function cancel()
+{
+   dlgTemplate.hide();
+}
+
+function showBrowse()
+{
+   if (dlgBrowse==null)
+   {
+     	dlgBrowsePath='';
+    	dlgBrowseCurrentDir='';
+     	dlgBrowseList='';
+     	dlgBrowse = createContent('browse','<?php echo JText::_('COM_HECMAILING_BROWSE_SERVER'); ?>', 330);
+    	dlgBrowseNode = dlgBrowse.getContentNode();
+  		l = dlgBrowseNode.getElementsByTagName('div');
+  		for (i in l)
+  		{
+  				el = l[i];
+  				if (el.id=='liste')
+    			{
+    					dlgBrowseList=el;
+    			}
+    			if (el.id=='CurrentDir')
+    			{
+    					dlgBrowseCurrentDir = el;
+    			}
+    			if (el.id=='Path')
+    			{
+    					dlgBrowsePath = el;
+    			}
+    	}	
     }
-
-	function showSaveTemplate()
-	{
-    if (dlgSaveTemplate==null)
-		dlgSaveTemplate = createContent('savetmpl','<?php echo JText::_('SAVE_TEMPLATE'); ?>', 400);    
-    dlgSaveTemplate.show();
-  
+    dlgBrowse.show();
+    dlgBrowse.moveTo(-1,-1);
+    fillList(curdir);
     return false;  
 }
-	function cancelSaveTmpl()
-    {
-            //document.getElementById("loadtmpl").style.visibility = "hidden";
-            
-            dlgSaveTemplate.hide();
-    }
- function cancel()
-    {
-            //document.getElementById("loadtmpl").style.visibility = "hidden";
-            
-            dlgTemplate.hide();
-    }
-    
-    function showBrowse()
-		{
-				
-        if (dlgBrowse==null)
-        {
-        	dlgBrowsePath='';
-        	dlgBrowseCurrentDir='';
-        	dlgBrowseList='';
-        	dlgBrowse = createContent('browse','<?php echo JText::_('BROWSE FILES'); ?>', 330);
-        	dlgBrowseNode = dlgBrowse.getContentNode();
-			l = dlgBrowseNode.getElementsByTagName('div');
-			for (i in l)
-			{
-				el = l[i];
-				
-				if (el.id=='liste')
-				{
-					dlgBrowseList=el;
-				}
-				if (el.id=='CurrentDir')
-				{
-					dlgBrowseCurrentDir = el;
-				}
-				if (el.id=='Path')
-				{
-					dlgBrowsePath = el;
-				}
-			}	
-		}
-        dlgBrowse.show();
-      	fillList(curdir);
-        return false;  
-    }
-    
-     function hideBrowse()
-		{
-        //document.getElementById("browse").style.visibility = "hidden";
-        if (dlgBrowse!=null) dlgBrowse.hide();
-      
-        return false;  
-    }
-    
- function addAttachment()
- {
- 		
+
+function hideBrowse()
+{
+  if (dlgBrowse!=null) dlgBrowse.hide();
+  return false;  
+}
+
+// Add attachment row (file input)
+function addAttachment()
+{
  		var count = document.getElementById("attachcount");
- 		
- 		var tab=document.getElementById("attachment");
- 		
-    row=document.createElement("TR");
-    
-    cell0 = document.createElement("TD");
+ 		var tab=document.getElementById("attachmentbody");
+    var row=document.createElement("tr");
+    var cell0 = document.createElement("td");
     n=0;
     n=count.value;
     n++;
-    iFile = document.createElement("input");
+    var iFile = document.createElement("input");
     iFile.name= 'attach'+n;
     iFile.id= 'attach'+n;
     iFile.type="file";
     iFile.style.width="100%";
-    cell0.appendChild(iFile);
-    row.appendChild(cell0);
     tab.appendChild(row);
+    row.appendChild(cell0);
+    cell0.appendChild(iFile);
  		count.value=n;
- 		
 }
-
 
 function selectDir()
 {
-	
-	
-	//var lst=document.getElementById("files").value;
 	var lst=dlgBrowseList;
-	
-	var curdir = dlgBrowseCurrentDir.innerHTML; //document.getElementById("CurrentDir").innerHTML;
-	
-	
+	var curdir = dlgBrowseCurrentDir.innerHTML;
 	if (lst.substr(0,1) == '@')
 	{
 		lst = lst.substr(1);
@@ -299,89 +288,70 @@ function selectDir()
 			for(i=curdir.length-1;i>0;i--)
 			{
 				if (curdir.substr(i,1)=='/')
-					{
+				{
 						n=i;
 						break;
-					}
 				}
-			
-			
-			newdir=curdir.substr(0,n);
-			
-		}
-		else
-			newdir = curdir+'/'+lst 
-		
-		//alert ('Voir ' + newdir);
-		var poststr = "dir=" + encodeURI( root_dir + '/' + newdir ) ;
-	
-		makePOSTRequest('components/com_hecmailing/libraries/getDir.php', poststr);
-	}
-	//curdir.innerHTML = curdir.innerHTML+"/"+lst.value;
+			}
+  		newdir=curdir.substr(0,n);
+  	}
+  	else
+  		newdir = curdir+'/'+lst 
+		var poststr = "dir=" + encodeURI( newdir ) ;
+		makePOSTRequest('<?php echo JURI::current()?>', poststr+"&task=getdir&format=raw&option=com_hecmailing");
+  }
 }
 
 function selectFile()
 {
 		var count = document.getElementById("localcount");
- 		
- 		var tab=document.getElementById("attachment");
- 		//var list = document.getElementById("liste");
- 		
-		dlgnode = dlgBrowse.getContentNode();
-		
-		
+ 		var tab=document.getElementById("attachmentbody");
+  	dlgnode = dlgBrowse.getContentNode();
  		sel = getSelected(dlgBrowseList);
- 		
  		if (curdir.length>0) ledir=curdir+'/';
  		else ledir='/'
- 			
  		for (i=0;i<sel.length;i++)
  		{
-    row=document.createElement("TR");
-    
-    cell0 = document.createElement("TD");
-    n=0;
-    n=count.value;
-    n++;
-    iFile = document.createElement("input");
-    iFile.name= 'local'+n;
-    iFile.id= 'local'+n;
-    iFile.type="hidden";
-    iFile.value = base_dir+ledir+sel[i];
-    cell0.appendChild(iFile);
-    iChk=document.createElement('input');
-    iChk.name= 'chklocal'+n;
-    iChk.id= 'chklocal'+n;
-    iChk.checked=true;
-    iChk.type='checkbox';
-    iTxt = document.createTextNode('  ' + base_dir + ledir +  sel[i]);
-    cell0.appendChild(iChk);
-    cell0.appendChild(iTxt);
-    row.appendChild(cell0);
-    tab.appendChild(row);
- 		count.value=n;
- 	  }
- 	  
- 		hideBrowse();
+      row=document.createElement("TR");
+      cell0 = document.createElement("TD");
+      n=0;
+      n=count.value;
+      n++;
+      var iFile = document.createElement("input");
+      iFile.name= 'local'+n;
+      iFile.id= 'local'+n;
+      iFile.type="hidden";
+      iFile.value = base_dir+ledir+sel[i];
+      cell0.appendChild(iFile);
+      iChk=document.createElement('input');
+      iChk.name= 'chklocal'+n;
+      iChk.id= 'chklocal'+n;
+      iChk.checked=true;
+      iChk.type='checkbox';
+      iTxt = document.createTextNode('  ' + base_dir + ledir +  sel[i]);
+      cell0.appendChild(iChk);
+      cell0.appendChild(iTxt);
+      tab.appendChild(row);
+      row.appendChild(cell0);
+   		count.value=n;
+   }
+   hideBrowse();
 }
 
 function addElement(divListe,path, isfolder)
 {
 	var a = document.createElement('a');
 	num=divListe.childNodes.length;
-  
   if (isfolder) // Dir
   {
   	a.id = 'folder'+num; 
   	a.ondblclick= function() { dbclick(this);return false; }
   	img = document.createElement('img');
-  	img.src="components/com_hecmailing/images/folder.gif";
+  	img.src="<?php echo JURI::base( true )."/components/com_hecmailing/images/folder.gif"?>";
   	img.width=16;
   	img.height=16;
   	a.appendChild(img);
-  	
   	txt=document.createTextNode("  " + path);
-  	
   	a.appendChild(txt);
   }
   else
@@ -399,6 +369,7 @@ function addElement(divListe,path, isfolder)
   a.name=path;
   divListe.appendChild(a);
 }
+
 function resetList(divListe)
 {
 	obj=divListe;
@@ -419,44 +390,40 @@ function getSelected(divListe)
 {
 	ret=new Array();
 	lesCheck = divListe.getElementsByTagName('input');
-	//lesCheck = divListe.getElementsByTagName('a');
 	for (i=0;i< lesCheck.length;i++)
 	{
 		chk=lesCheck[i];
-		
 		if (chk.type=='checkbox')
 		{
-			if (chk.checked)
-				ret.push(chk.name);
-		}
+  		if (chk.checked)
+  			ret.push(chk.name);
+  	}
 	}
 	return ret;
 }
 
 function dbclick(param)
 {
-	
 	if (param.name=='..')
 	{
 			k=-1;
 			for(i=curdir.length-1;i>0;i--)
 			{
 				if (curdir.substr(i,1)=='/')
-					{
+				{
 						k=i;
 						break;
-					}
 				}
-			
-			
+			}
 			newdir=curdir.substr(0,k);
 	}
 	else
-		{
-			newdir=curdir+'/'+ param.name;			
-		}
-	fillList( newdir);
+	{
+  		newdir=curdir+'/'+ param.name;			
+  }
+  fillList( newdir);
 }
+
 function select(elmt)
 {
 	var chk = elmt.getElementsByTagName('input');
@@ -464,10 +431,10 @@ function select(elmt)
 	chk.checked=!chk.checked;
 }
 
+var http_request = false;
 
- var http_request = false;
- function makePOSTRequest(url, parameters) 
- {
+function makePOSTRequest(url, parameters) 
+{
     http_request = false;
     if (window.XMLHttpRequest) 
     { // Mozilla, Safari,...
@@ -498,71 +465,57 @@ function select(elmt)
        alert('Cannot create XMLHTTP instance');
        return false;
     }
-    
     http_request.onreadystatechange = alertContents;
-    
-    
-    
     http_request.open('POST', url, true);
-    
     http_request.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
     http_request.setRequestHeader("Content-length", parameters.length);
     http_request.setRequestHeader("Connection", "close");
     http_request.send(parameters);
-    
- }
-	 var curdir='';
-	 
-   function alertContents() {
-      if (http_request.readyState == 4) 
-      {
-         if (http_request.status == 200) 
-         {
-    					        
-            	result = http_request.responseText;
-            	//list = document.getElementById('liste');
-  					list=dlgBrowseList;	
-							
-							ret = result.split('|');
-							
-							resetList(list);
-							n=true;
-							for (i=0;i<ret.length-1;i++)           
-							{
-								 if (n)
-								 {
-								 		curdir = ret[i];
-								 		n=false;
-								 }
-								 else
-								 {
-								 		elmt=ret[i];
-								 		var isfolder=false;
-								 		if (elmt.substr(0,1) == '@')
-										{
-											elmt = elmt.substr(1);
-											isfolder=true;
-										}	
-								 		addElement(list,elmt, isfolder);
-									
-    						 }
-							}           
-							cdir=dlgBrowseCurrentDir; //document.getElementById('CurrentDir');
-							cdir.innerHTML=curdir;
-							dlgBrowsePath.innerHTML = '<?php echo $this->browse_path; ?>'+curdir;
-         }
-         else 
-         {
-            alert("<?php echo JText::_('BROWSE_PROBLEM'); ?>");
-            //alert('ERROR');
-         }
-      }
-   }
+}
+var curdir='';
+
+function alertContents() {
+  if (http_request.readyState == 4) 
+  {
+     if (http_request.status == 200) 
+     {
+       	result = http_request.responseText;
+				list=dlgBrowseList;	
+				ret = result.split('|');
+				resetList(list);
+				n=true;
+				for (i=0;i<ret.length-1;i++)           
+				{
+					 if (n)
+					 {
+  				 		curdir = ret[i];
+  				 		n=false;
+  				 }
+  				 else
+  				 {
+  				 		elmt=ret[i];
+  				 		var isfolder=false;
+  				 		if (elmt.substr(0,1) == '@')
+  						{
+  								elmt = elmt.substr(1);
+  								isfolder=true;
+  						}	
+  				 		addElement(list,elmt, isfolder);
+  				 }
+  			}           
+  			cdir=dlgBrowseCurrentDir; 
+  			cdir.innerHTML=curdir;
+  			dlgBrowsePath.innerHTML = curdir;
+     }
+     else 
+     {
+        alert("<?php echo JText::_('COM_HECMAILING_BROWSE_PROBLEM'); ?> :" + http_request.status);
+     }
+  }
+}
 
 function fillList(dirname)
 {
-		//list = document.getElementById('liste');
-		
 		list=dlgBrowseList;
 		resetList(list);
 		div = document.createElement('div');
@@ -570,147 +523,151 @@ function fillList(dirname)
 		div.style.width="100%";
 		div.style.height="100%";
 		img = document.createElement('img');
-  	img.src="components/com_hecmailing/images/ajax-loader.gif";
+  	img.src="<?php echo JURI::base( true )."/components/com_hecmailing/images/ajax-loader.gif"?>";
   	l = (list.clientWidth-50)/2;
   	h = (list.clientHeight-50)/2;
   	img.style.marginLeft= l+"px";
   	img.style.marginTop= h+"px";
   	div.appendChild(img);
   	list.appendChild(div);
-	if (dirname==undefined)
-	{
-		dirname='';
-	}
-  	var poststr = "root=" + encodeURI( root_dir );
-		if (dirname=='')
-		{
-			
-			poststr = poststr ;
-			
-			
-		}
-		else
-		{
-		  poststr = poststr +  "&dir=" + encodeURI(  dirname ) ;
-		 
-			
-		}
-		
-		makePOSTRequest('components/com_hecmailing/libraries/getDir.php', poststr);
+  	if (dirname==undefined)
+  	{
+  		dirname='';
+  	}
+   	var poststr = "option=com_hecmailing";
+  	if (dirname!='')
+  	{
+  	  poststr = poststr + "&dir=" + encodeURI(  dirname ) ;
+  	}
+	  makePOSTRequest('<?php echo JURI::current()?>', poststr+'&task=getdir&format=raw');
 }
+
 function checksend()
 {
 	var grp = document.getElementById("groupe");
 	val = grp.options[grp.selectedIndex].value;
 	if (val<0)
 	{
-		alert('<?php echo JText::_('MSG_SELECT_GROUP'); ?>');
+		alert('<?php echo JText::_('COM_HECMAILING_MSG_SELECT_GROUP'); ?>');
 		return false;
 	}
 	var subject = document.getElementById("subject").value;
-	
 	if (subject.length==0)
 	{
-		alert('<?php echo JText::_('MSG_EMPTY_SUBJECT'); ?>');
+		alert('<?php echo JText::_('COM_HECMAILING_MSG_EMPTY_SUBJECT'); ?>');
 		return false;
 	}
-	
 	submitbutton('send');
 }
+<?php echo $this->rights; ?>
+var current_group=0;
+function showManageButton(selectBox)
+{
+	var btn = document.getElementById("manage_button");
+	current_group=selectBox.options[selectBox.options.selectedIndex].value;
+	flag=rights[current_group];
+	if ((flag & 6)>0)
+	{
+		btn.style.visibility = 'visible';
+	}
+	else
+	{
+		btn.style.visibility = 'hidden';
+	}
+}
+function manage_group()
+{
+	window.open("index2.php?option=com_hecmailing&task=manage_group&tmpl=component&idgroup='; ?>"+current_group,"<?php JText::_('MANAGE_GROUP') ?>","directories=no,location=no,menubar=no,resizable=yes,scrollbars=yes,status=yes,toolbar=no,width=800,height=600");
+}
 </script>
-
 </div>
-<form action="index.php" method="post" name="adminForm" id="adminForm" ENCTYPE="multipart/form-data">
 
-<div class="componentheading"><?php echo JText::_('MAILING'); ?></div>
+<form action="<?php echo JURI::current(); ?>" method="post" name="adminForm" id="adminForm" ENCTYPE="multipart/form-data">
+<div class="componentheading"><?php echo JText::_('COM_HECMAILING_MAILING'); ?></div>
 <div id="component-hecmailing">
-</div>
 
+</div>
 <table class="toolbar"><tr>
 <td class="button" id="User Toolbar-send">
   <a href="#" onclick="javascript: checksend();return false;"  class="toolbar">
-    <span class="icon-32-send" title="<?php echo JText::_('SEND_INFO'); ?>"></span><?php echo JText::_('Send'); ?></a></td>
+    <span class="icon-32-send" title="<?php echo JText::_('COM_HECMAILING_SEND_INFO'); ?>"></span><?php echo JText::_('COM_HECMAILING_SEND'); ?></a></td>
 <td class="button" id="User Toolbar-cancel">
   <a href="#" onclick="javascript: submitbutton('cancel');return false;"  class="toolbar">
-    <span class="icon-32-cancel" title="<?php echo JText::_('CANCEL_MSG'); ?>"></span><?php echo JText::_('Cancel'); ?></a></td>
-<td class="spacer"></td><td class="spacer"></td><td class="spacer"></td><td class="spacer"></td>
+    <span class="icon-32-cancel" title="<?php echo JText::_('COM_HECMAILING_CANCEL_MSG'); ?>"></span><?php echo JText::_('COM_HECMAILING_CANCEL'); ?></a></td>
+<td class="spacer"></td><td class="spacer"></td><td class="spacer"></td><td class="spacer"></td>            
 <td class="button" id="User Toolbar-save">
   <a href="#" onclick="javascript: showSaveTemplate();return false;"  class="toolbar">
-    <span class="icon-32-save" title="<?php echo JText::_('SAVE_INFO'); ?>"></span><?php echo JText::_('SAVE'); ?></a></td>
-
+    <span class="icon-32-save" title="<?php echo JText::_('COM_HECMAILING_SAVE_INFO'); ?>"></span><?php echo JText::_('COM_HECMAILING_SAVE'); ?></a></td>
 <td class="button" id="User Toolbar-archive">
   <a href="#" onclick="javascript: showLoadTemplate();return false;"  class="toolbar">
-    <span class="icon-32-archive" title="<?php echo JText::_('LOAD_TEMPLATE')?>"></span><?php echo JText::_('LOAD_TEMPLATE'); ?></a>
+    <span class="icon-32-archive" title="<?php echo JText::_('COM_HECMAILING_LOAD_TEMPLATE')?>"></span><?php echo JText::_('COM_HECMAILING_LOAD_TEMPLATE'); ?></a>
 </td>
 <td>&nbsp;</td>
 <td class="button" id="User Toolbar-log">
   <a href="index.php?option=com_hecmailing&task=log" class="toolbar">
-    <span class="icon-32-log" title="<?php echo JText::_('SHOW LOG')?>"></span><?php echo JText::_('SHOW_LOG'); ?></a>
+    <span class="icon-32-log" title="<?php echo JText::_('COM_HECMAILING_SHOW LOG')?>"></span><?php echo JText::_('COM_HECMAILING_SHOW_LOG'); ?></a>
 </td>
-
 </tr></table> 
-
-<?php echo $this->msg;
-
-  $obj=$this->obj; 
+<?php 
+  echo $this->msg;
 
 ?>
 <hr><br>
-
 <table width="100%" class="admintable" style="valign:top">
 
-<tr valign="top"><td class="key"><?php echo JText::_('SENDER'); ?> :</td><td><?php echo $this->from; ?></td></tr>
-<tr valign="top"><td class="key"><?php echo JText::_('GROUP'); ?> :</td><td><?php echo $this->groupes; ?></td></tr>
-<tr valign="top"><td class="key"><?php echo JText::_('USE_PROFILE'); ?> :</td><td><input type="checkbox" name="useprofil" value="1" id="useprofil" <?php echo $this->default_use_profil; ?>> <small><?php echo JText::_('USE_PROFILE_TEXT'); ?></small></td></tr>
-<tr valign="top"><td class="key"><?php echo JText::_('BACKUP_MAIL'); ?> :</td><td><input type="checkbox" name="backup_mail" value="1" id="backup_mail" <?php echo $this->backup_mail; ?>> <small><?php echo JText::_('BACKUP_MAIL_TEXT'); ?></small></td></tr>
-
-<tr valign="top"><td class="key"><?php echo JText::_('CONTENT_IMAGE'); ?> :</td><td><input type="checkbox" name="incorpore" value="1" id="incorpore" <?php echo $this->image_incorpore; ?>> <small><?php echo JText::_('CONTENT_IMAGE_TEXT'); ?></small></td></tr>
-<tr valign="top"><td class="key"><?php echo JText::_('SUBJECT'); ?> :</td><td><input style="width:100%"  type="text" id="subject" name="subject" value="<?=$this->subject; ?>"></td></tr>
-<tr valign="top"><td class="key"><?php echo JText::_('ATTACHMENT'); ?> :</td><td>
-<table id="attachment" name="attachment">
-	<tr><td>
-		<button onclick="javascript:addAttachment();return false;"><?php echo JText::_('ADD_ATTACHMENT'); ?></button>
-		<input type="hidden" name="attachcount" id="attachcount" value="0">
-		<input type="button" value="<?php echo JText::_('BROWSE_SERVER'); ?>" onclick="javascript: showBrowse(); return false;" />
-	</td></tr>
-<?php
-$ilocal=0;
-
-foreach($this->attachment as $file)
-{
-	$ilocal++;
-	echo"<tr><td><input type=\"hidden\" name=\"local".$ilocal."\" id=\"local".$ilocal."\" value=\"".$file."\"><input type=\"checkbox\" name=\"chklocal".$ilocal."\" id=\"chklocal".$ilocal."\" checked=\"checked\">".$file."</td></tr>";
-	
-}
-?>
+  <tr valign="top"><td class="key"><?php echo JText::_('COM_HECMAILING_SENDER'); ?> :</td><td><?php echo $this->from; ?></td></tr>
+  
+  <tr valign="top"><td class="key"><?php echo JText::_('COM_HECMAILING_GROUP'); ?> :</td><td><?php echo $this->groupes; ?><button id="manage_button" style="visibility:hidden;" onClick="manage_group();return false;">MANAGE</button></td></tr>
+  
+  <tr valign="top"><td class="key"><?php echo JText::_('COM_HECMAILING_USE_PROFILE'); ?> :</td><td><input type="checkbox" name="useprofil" value="1" id="useprofil" <?php echo $this->default_use_profil; ?>> <small><?php echo JText::_('COM_HECMAILING_USE_PROFILE_TEXT'); ?></small></td></tr>
+  
+  <tr valign="top"><td class="key"><?php echo JText::_('COM_HECMAILING_BACKUP_MAIL'); ?> :</td><td><input type="checkbox" name="backup_mail" value="1" id="backup_mail" <?php echo $this->backup_mail; ?>> <small><?php echo JText::_('COM_HECMAILING_BACKUP_MAIL_TEXT'); ?></small></td></tr>
+  
+  <tr valign="top"><td class="key"><?php echo JText::_('COM_HECMAILING_CONTENT_IMAGE'); ?> :</td><td><input type="checkbox" name="incorpore" value="1" id="incorpore" <?php echo $this->image_incorpore; ?>> <small><?php echo JText::_('COM_HECMAILING_CONTENT_IMAGE_TEXT'); ?></small></td></tr>
+  
+  <tr valign="top"><td class="key"><?php echo JText::_('COM_HECMAILING_SUBJECT'); ?> :</td><td><input style="width:100%"  type="text" id="subject" name="subject" value="<?php echo $this->subject; ?>"></td></tr>
+  
+  <tr valign="top"><td class="key"><?php echo JText::_('COM_HECMAILING_ATTACHMENT'); ?> :</td><td>
+  <table id="attachment" name="attachment">
+    <tbody id="attachmentbody" name="attachmentbody">
+    	<tr><td>
+    		<button onclick="javascript:addAttachment();return false;"><?php echo JText::_('COM_HECMAILING_ADD_ATTACHMENT'); ?></button>
+    		
+    		<input type="button" value="<?php echo JText::_('COM_HECMAILING_BROWSE_SERVER'); ?>" onclick="javascript: showBrowse(); return false;" />
+    	</td></tr>
+  
+  
+  <?php
+    $ilocal=0;
+    foreach($this->attachment as $file)
+    {
+    	$ilocal++;
+    	echo"<tr><td><input type=\"hidden\" name=\"local".$ilocal."\" id=\"local".$ilocal."\" value=\"".$file."\"><input type=\"checkbox\" name=\"chklocal".$ilocal."\" id=\"chklocal".$ilocal."\" checked=\"checked\">".$file."</td></tr>";
+    }
+    $iattach=0 ;
+    for ($i=0;$i<$this->upload_input_count;$i++)
+    {
+    	$iattach++;
+    	echo"<tr><td><input type=\"file\" name=\"attach".$iattach."\" id=\"attach".$iattach."\" ></td></tr>";
+    
+    }
+  ?>
+  </tbody></table>
+  </td></tr>
+  <tr valign="top"><td class="key"><?php echo JText::_('COM_HECMAILING_BODY'); ?> :</td><td>
+  <?php
+  $editor =& JFactory::getEditor();
+  echo $editor->display('body', $this->body, $this->width, $this->height, '60', '20', true);
+  ?>
+  <input type="hidden" name="localcount" id="localcount" value="<?php echo $ilocal; ?>"><input type="hidden" name="attachcount" id="attachcount" value="<?php echo $iattach; ?>"></td></tr>
 </table>
-
-	</td></tr>
-	
-<tr valign="top"><td class="key"><?php echo JText::_('BODY'); ?> :</td><td>
-
-<?php
-
-/*<textarea id="desc" width="300px" cols="50"  name="desc" rows="4"><?=$obj->desc </textarea>*/
-
-$editor =& JFactory::getEditor();
-
-echo $editor->display('body', $this->body, $this->width, $this->height, '60', '20', true);
-
-?>
-
-<input type="hidden" name="localcount" id="localcount" value="<?php echo $ilocal ?>"></td></tr>
-
-</table>
-
-
 <?php echo JHTML::_( 'form.token' ); ?>
-
 <input type="hidden" name="option" id="option" value="com_hecmailing">
 <!--<input type="hidden" name="view" id="view" value="form">-->
 <input type="hidden" name="task" id="task" value="">
 <input type="hidden" name="idTemplate" id="idTemplate" value="0">
 <input type="hidden" name="saveTemplate" id="saveTemplate" value="">
-
 </form>
+
+
 

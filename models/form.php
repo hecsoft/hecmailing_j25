@@ -1,6 +1,6 @@
 <?php 
 /**
-* @version 0.3.0
+* @version 1.7.6
 * @package hecMailing for Joomla
 * @copyright Copyright (C) 2009 Hecsoft All rights reserved.
 * @license GNU/GPL
@@ -19,13 +19,6 @@
 * along with this program; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 *
-* Change Log
- * 		0.6.0 : Ajout fonctionnalite contact
-*		0.5.0 : Correction probleme adresse/nom envoye par
-*						Sauvegarde des emails envoyes
-*		0.4.0 : Correction suppression item dans groupe
-*		0.3.0 : Prise en charge groupe 0 (tous membres) dans getMailAdrFromGroupe
-*		0.1.0 : Version d'origine
 */
 defined('_JEXEC') or die ('restricted access'); 
 
@@ -44,23 +37,17 @@ class ModelhecMailingForm extends JModel
 	 * @var int
 	 */
    var $_id = 0; 
-
    var $_object=null;
    
    /**
    *    Contructor 
    **/
    function __construct() 
-
    { 
-   	  parent::__construct(); 
-
+  	  parent::__construct(); 
    	  $this->params = &JComponentHelper::getParams( 'com_hecmailing' );
-
       $this->isLog = $this->params->get('Log');
-
       $this->isLog = true;
-
       if ($this->isLog)
       {
         $this->_log = &JLog::getInstance('com_hecmailing.log.php');
@@ -131,15 +118,36 @@ class ModelhecMailingForm extends JModel
 	                FROM #__users u inner join #__hecmailing_groupdetail gd ON u.username=gd.gdet_vl_value AND gd.gdet_cd_type=1
 	                WHERE gd.grp_id_groupe=".$groupe. $useprofile;
 	      // Cas des groupes joomla
-	      $query .= " UNION SELECT email, name
+	      if(version_compare(JVERSION,'1.6.0','<')){
+		       //Code pour Joomla! 1.5  
+           /* ***PHILOUX*** : Joomla 1.5.26 : prise en compte des utilisateurs bloques impossible : "u.block=0"
+              ***PHILOUX*** : Joomla 1.5.26 : Groupes Joomla, et ArtOfUsers : tables "core_acl_aro" et "core_acl_groups_aro_map"
+	    	  $query .= " UNION SELECT email, name
 	                FROM #__users u inner join #__hecmailing_groupdetail gd ON u.usertype=gd.gdet_vl_value AND gd.gdet_cd_type=3
 	                WHERE u.block=0 AND gd.grp_id_groupe=".$groupe. $useprofile.$blockcond1;
+           */
+	    	  $query .= " UNION SELECT u.email as email, u.name as name
+	                FROM #__users u 
+                  inner join #__core_acl_aro c on c.value=u.id
+                  inner join #__core_acl_groups_aro_map gm on gm.aro_id=c.id AND c.section_value='users'
+                  inner join #__hecmailing_groupdetail gd ON gd.gdet_cd_type=3 AND gd.gdet_id_value=gm.group_id
+	                WHERE gd.grp_id_groupe=".$groupe. $useprofile.$blockcond1;
+	      }
+	      else {
+	      	   //Code pour Joomla! 1.6+ 
+           /* ***PHILOUX*** : A TESTER : prise en compte des utilisateurs bloques impossible : "u.block=0"
+	                WHERE u.block=0 AND gd.grp_id_groupe=".$groupe. $useprofile.$blockcond1;
+           */
+	    	  $query .= " UNION SELECT email, name
+	                FROM #__users u inner join #__user_usergroup_map m ON u.id=m.user_id inner join #__hecmailing_groupdetail gd ON m.group_id=gd.gdet_id_value AND gd.gdet_cd_type=3
+	                WHERE gd.grp_id_groupe=".$groupe. $useprofile.$blockcond1;
+	      }
 	      // Cas des adresse e-mail
 	      $query .= " UNION SELECT gd.gdet_vl_value as email, gd.gdet_vl_value as name
 	                FROM #__hecmailing_groupdetail gd 
 	                WHERE gd.gdet_cd_type=4 AND gd.grp_id_groupe=".$groupe;
 	    }
-	    else	/* Tous les utilisateurs de la base (Actifs, non blockés) */
+	    else	/* Tous les utilisateurs de la base (Actifs, non blockï¿½s) */
 	    {
 	    	if (intval($useprofile)==1)
 	          $useprofile= " WHERE u.sendEmail=1 ".$blockcond2;
@@ -179,7 +187,12 @@ class ModelhecMailingForm extends JModel
    function getUserType($tous)
    {
       $db=$this->getDBO();
-      $query = "SELECT distinct userType FROM #__users";
+      if(version_compare(JVERSION,'1.6.0','<')){
+		 //Code pour Joomla! 1.5  
+      	$query = "SELECT distinct userType FROM #__users";
+      } else {
+      	$query = "SELECT distinct Title FROM #__user_usergroup";
+      }
                               
       $db->setQuery($query);
       if (!$rows = $db->loadRowList())
@@ -195,6 +208,8 @@ class ModelhecMailingForm extends JModel
 
    }
     
+    
+    
     /**
 	 * Method to get mailing groups as HTML select
 	 *
@@ -206,41 +221,66 @@ class ModelhecMailingForm extends JModel
    function getGroupes($tous, $save, $askselect)
    {
       $db=$this->getDBO();
-      $query = "SELECT grp_id_groupe, grp_nm_groupe FROM #__hecmailing_groups Where published=1 order by grp_nm_groupe";
-                              
+      $user =&JFactory::getUser();
+      $admintype = $this->params->get('usertype');
+      
+      $admingroup = $this->params->get('groupaccess');
+      if ($this->isInGroupe($admingroup) || $this->isAdminUserType($admintype))
+      	$query = "SELECT grp_id_groupe, grp_nm_groupe FROM #__hecmailing_groups Where published=1 order by grp_nm_groupe";
+      else
+      {
+      	if(version_compare(JVERSION,'1.6.0','<')){
+		 //Code pour Joomla! 1.5 
+		 $query = "SELECT DISTINCT g.grp_id_groupe, grp_nm_groupe,1 as flag FROM #__hecmailing_groups g
+ 			INNER JOIN #__hecmailing_rights r ON r.grp_id_groupe=g.grp_id_groupe
+ 			LEFT JOIN #__users u ON u.id=r.userid
+			WHERE published=1 AND (r.userid=".$user->id." OR r.groupid=".$user->gid.") ORDER BY grp_nm_groupe";
+      	}else { 
+      		$query = "SELECT DISTINCT g.grp_id_groupe, grp_nm_groupe, r.flag FROM #__hecmailing_groups g
+	 			INNER JOIN #__hecmailing_rights r ON r.grp_id_groupe=g.grp_id_groupe
+	 			LEFT JOIN #__users u ON u.id=r.userid LEFT JOIN #__user_usergroup_map m ON  m.group_id=r.groupid AND m.user_id=".$user->id."
+				WHERE published=1 AND ((r.flag AND 1)=1) AND ((r.userid=".$user->id." AND ifnull(r.groupid,0)=0) OR (r.groupid=m.group_id AND ifnull(r.userid,0)=0)) ORDER BY grp_nm_groupe";
+      	}
+      }                        
       $db->setQuery($query);
       if (!$rows = $db->loadRowList())
       {
           return false;
       }
      $val = array();
+     $rights = array();
      $save=false;
      if ($askselect)
      {
-        $val[] = JHTML::_('select.option', -2, "{".JText::_('SELECT GROUP')."}", 'grp_id_groupe', 'grp_nm_groupe');
+        $val[] = JHTML::_('select.option', -2, "{".JText::_('COM_HECMAILING_SELECT_GROUP')."}", 'grp_id_groupe', 'grp_nm_groupe');
      }
-     
-     
      if ($save)
      {
-        $val[] = JHTML::_('select.option', -1, "{".JText::_('SAVE')."}", 'grp_id_groupe', 'grp_nm_groupe');
+        $val[] = JHTML::_('select.option', -1, "{".JText::_('COM_HECMAILING_SAVE')."}", 'grp_id_groupe', 'grp_nm_groupe');
      }
-     
-     if ($tous=='1')
-     {
-        $val[] = JHTML::_('select.option', 0, '{'.JText::_('ALL_USERS').'}', 'grp_id_groupe', 'grp_nm_groupe');
+     if ($tous=='1' && ($this->isAdminUserType($admintype) || $this->isInGroupe($admingroup) ))
+     {	// On n'affiche la ligne Tous les utilisateur que si l'utilisateur actuellement connectï¿½ est admin ou fait partie du groupe d'admin (groupe HEC Mailing)
+        $val[] = JHTML::_('select.option', 0, '{'.JText::_('COM_HECMAILING_ALL_USERS').'}', 'grp_id_groupe', 'grp_nm_groupe');
      }
      foreach($rows as $r)
      {
-        $val[] = JHTML::_('select.option', $r[0], $r[1], 'grp_id_groupe', 'grp_nm_groupe');
+     	if (($r[2] & 6)>0)
+     	{
+     		$val[] = JHTML::_('select.option', $r[0], $r[1]."*", 'grp_id_groupe', 'grp_nm_groupe');
+     		$rights[]=$r[0].":".$r[2];
+     	}
+     	else
+     	{
+        	$val[] = JHTML::_('select.option', $r[0], $r[1], 'grp_id_groupe', 'grp_nm_groupe');
+     	}
      }
      
-     if ($tous=='2')
-     {
-        $val[] = JHTML::_('select.option', 0, '{'.JText::_('ALL_USERS').'}', 'grp_id_groupe', 'grp_nm_groupe');
+     if ($tous=='2' && ($this->isAdminUserType($admintype) || $this->isInGroupe($admingroup) ))
+     {  // On n'affiche la ligne Tous les utilisateur que si l'utilisateur actuellement connectï¿½ est admin ou fait partie du groupe d'admin (groupe HEC Mailing)
+        $val[] = JHTML::_('select.option', 0, '{'.JText::_('COM_HECMAILING_ALL_USERS').'}', 'grp_id_groupe', 'grp_nm_groupe');
      }
      
-     return $val;
+     return array($val,$rights);
 
    }
 
@@ -252,16 +292,17 @@ class ModelhecMailingForm extends JModel
 	 */   
     function getFrom()
    {
-      global $mainframe;
-      $user =&JFactory::getUser();
-      $MailFrom 	= $mainframe->getCfg('mailfrom');
-      $FromName 	= $mainframe->getCfg('fromname');
-      $val = array();
-      $val[] = JHTML::_('select.option', $user->email.';'.$user->name, $user->name, 'email', 'name');
-      $val[] = JHTML::_('select.option', $MailFrom.';'.$FromName, JText::_('DEFAULT').'('.$FromName.')', 'email', 'name');
-       
-       return $val;
+		// Modif Joomla 1.6+
+		$mainframe = JFactory::getApplication();
 
+		$user =&JFactory::getUser();
+		$MailFrom 	= $mainframe->getCfg('mailfrom');
+		$FromName 	= $mainframe->getCfg('fromname');
+		$val = array();
+		$val[] = JHTML::_('select.option', $user->email.';'.$user->name, $user->name, 'email', 'name');
+		$val[] = JHTML::_('select.option', $MailFrom.';'.$FromName, JText::_('COM_HECMAILING_DEFAULT').'('.$FromName.')', 'email', 'name');
+       
+		return $val;
    }
 
    /**
@@ -288,6 +329,73 @@ class ModelhecMailingForm extends JModel
       return true;
    }
 
+   function isAdminUserType($admintype)
+   {
+        if(version_compare(JVERSION,'1.6.0','<')){
+            //Code pour Joomla! 1.5  
+            return strpos($admintype, $user->usertype);
+        }else{
+          //Code pour Joomla >= 1.6.0
+          $db=$this->getDBO();
+          $user =&JFactory::getUser();
+          $userid = $user->get( 'id' );
+          $listUserTypeAllowed = split(";",$admintype);
+          $query = "select count(*) FROM #__usergroups g LEFT JOIN _user_usergroup_map AS map ON map.group_id = g.id ";
+          $query.= "WHERE map.user_id=".(int) $userid." AND g.title IN (".join(",",$listUserTypeAllowed).")";
+          $db->setQuery($query);
+          $rows=$db->loadRow();
+          if (!$rows)
+  	      {
+  	          return false;
+  	      }
+  	      if ($rows[0]==0)
+  	      {
+  	      	return false;
+	        }
+	        return true;
+      }
+   }
+
+	function hasGroupe()
+	{
+		$db=$this->getDBO();
+      $user =&JFactory::getUser();
+      $admintype = $this->params->get('usertype');
+      
+      $admingroup = $this->params->get('groupaccess');
+      if ($this->isInGroupe($admingroup) || $this->isAdminUserType($admintype))
+      {
+      	$query = "SELECT grp_id_groupe FROM #__hecmailing_groups Where published=1 order by grp_nm_groupe";
+ 	  }
+ 	  else
+ 	  {
+ 	      if(version_compare(JVERSION,'1.6.0','<')){
+        		$query = "SELECT g.grp_id_groupe FROM #__hecmailing_groups g
+           			INNER JOIN #__hecmailing_rights r ON r.grp_id_groupe=g.grp_id_groupe
+           			LEFT JOIN #__users u ON u.id=r.userid
+          			WHERE published=1 AND (r.userid=".$user->id." OR r.groupid=".$user->gid.") ORDER BY grp_nm_groupe";
+        }
+        else
+        {
+            $query = "SELECT g.grp_id_groupe FROM #__hecmailing_groups g
+           			INNER JOIN #__hecmailing_rights r ON r.grp_id_groupe=g.grp_id_groupe
+           			WHERE published=1 AND r.userid=".$user->id." 
+                UNION SELECT r.grp_id_groupe FROM #__hecmailing_rights r INNER JOIN #__user_usergroup_map map 
+                ON r.groupid=map.group_id WHERE map.user_id=".$user->id;        
+        
+        }  	
+		}
+		  $db->setQuery($query);
+		  $rows = $db->loadRow();
+	      if (!$rows)
+	      {
+	          return false;
+	      }
+	      
+	      
+      return true;
+	}
+
    /**
 	 * Method to get Html select option of saved templates
 	 *
@@ -305,7 +413,7 @@ class ModelhecMailingForm extends JModel
           return false;
       }
      $val = array();
-     $val[] = JHTML::_('select.option', 0, JText::_('NONE'), 'msg_id_message', 'msg_lb_message');
+     $val[] = JHTML::_('select.option', 0, JText::_('COM_HECMAILING_NONE'), 'msg_id_message', 'msg_lb_message');
      
      foreach($rows as $r)
      {

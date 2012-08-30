@@ -1,8 +1,8 @@
 <?php
 /**
- * @version 0.8.2 
+ * @version 1.7.4 
  * @package hecmailing
- * @copyright 2009 Hecsoft.info
+ * @copyright 2009-2012 Hecsoft.net
  * @license http://www.gnu.org/licenses/gpl-3.0.html
  * @link http://joomlacode.org/gf/project/userport/
  * @author H Cyr
@@ -17,7 +17,6 @@ defined( '_JEXEC' ) or die( 'Restricted access' );
 */
 class HTML_hecmailing
 {
-  
   /**
    * Methode to display group list
    *
@@ -30,85 +29,78 @@ class HTML_hecmailing
 	function showObjects( &$rows, &$pageNav, $option, &$lists )
 	{
 		$user =& JFactory::getUser();
-
 		//Ordering allowed ?
 		$ordering = ($lists['order'] == 'cd.ordering');
-
+ 
 		JHTML::_('behavior.tooltip');
-		?>
-		<form action="index.php?option=com_hecmailing" method="post" name="adminForm">
-
-		<table>
-		<tr>
-			<td align="left" width="100%">
-				<?php echo JText::_( 'Filter' ); ?>:
-				<input type="text" name="search" id="search" value="<?php echo $lists['search'];?>" class="text_area" onchange="document.adminForm.submit();" />
-				<button onclick="this.form.submit();"><?php echo JText::_( 'GO' ); ?></button>
-				<button onclick="document.getElementById('search').value='';this.form.getElementById('filter_catid').value='0';this.form.getElementById('filter_state').value='';this.form.submit();"><?php echo JText::_( 'RESET' ); ?></button>
-			</td>
-			<td nowrap="nowrap">
-				<?php
-				echo $lists['catid'];
-				echo $lists['state'];
-				?>
-			</td>
-		</tr>
-		</table>
-
-			<table class="adminlist">
-			<thead>
-				<tr>
-					<th width="10">
-						<?php echo JText::_( 'NUM' ); ?>
-					</th>
-					<th width="10" class="title">
-						<input type="checkbox" name="toggle" value="" onclick="checkAll(<?php echo count($rows); ?>);" />
-					</th>
-					
-					<th class="title" >
-						<?php echo JHTML::_('grid.sort',   JText::_('NAME'), 'g.grp_nm_groupe', @$lists['order_Dir'], @$lists['order'] ); ?>
-					</th>
-					
-					<th  class="title">
-						<?php echo JHTML::_('grid.sort',   JText::_('DESCRIPTION'), 'g.grp_cm_groupe', @$lists['order_Dir'], @$lists['order'] ); ?>
-					</th>
-					<th class="title" >
-						<?php echo JHTML::_('grid.sort',   JText::_('PUBLISHED'), 'g.published', @$lists['order_Dir'], @$lists['order'] ); ?>
-					</th>
-					<th class="title" >
-						<?php echo JHTML::_('grid.sort',   JText::_('ITEM_COUNT'), 'grp_nb_item', @$lists['order_Dir'], @$lists['order'] ); ?>
-					</th>
-					<th  width="5px" class="title">
-						<?php echo JHTML::_('grid.sort',   JText::_('ID'), 'g.grp_id_groupe', @$lists['order_Dir'], @$lists['order'] ); ?>
-					</th>
-				<tr>
-			</thead>
-			<tfoot>
-				<tr>
-					<td colspan="7">
-						<?php echo $pageNav->getListFooter(); ?>
-					</td>
-				</tr>
-			</tfoot>
-			<tbody>
-			<?php
-			$k = 0;
-			for ($i=0, $n=count($rows); $i < $n; $i++) {
-				$row = $rows[$i];
+ 		?>
+ 		<form action="index.php?option=com_hecmailing" method="post" name="adminForm">
+ 		<table>
+ 		<tr>
+ 			<td align="left" width="100%">
+ 				<?php echo JText::_( 'FILTER' ); ?>:
+ 				<input type="text" name="search" id="search" value="<?php echo $lists['search'];?>" class="text_area" onchange="document.adminForm.submit();" />
+ 				<button onclick="this.form.submit();"><?php echo JText::_( 'GO' ); ?></button>
+ 				<button onclick="document.getElementById('search').value='';this.form.getElementById('filter_catid').value='0';this.form.getElementById('filter_state').value='';this.form.submit();"><?php echo JText::_( 'RESET' ); ?></button>
+ 			</td>
+ 			<td nowrap="nowrap">
+ 				<?php
+ 				echo $lists['catid'];
+ 				echo $lists['state'];
+ 				?>
+ 			</td>
+ 		</tr>
+ 		</table>
+ 		<table class="adminlist">
+ 			<thead>
+ 				<tr>
+ 					<th width="10">
+ 						<?php echo JText::_( 'NUM' ); ?>
+ 					</th>
+ 					<th width="10" class="title">
+ 						<input type="checkbox" name="toggle" value="" onclick="checkAll(<?php echo count($rows); ?>);" />
+ 					</th>
+ 					<th class="title" >
+ 						<?php echo JHTML::_('grid.sort',   JText::_('NAME'), 'g.grp_nm_groupe', @$lists['order_Dir'], @$lists['order'] ); ?>
+ 					</th>
+ 					<th  class="title">
+ 						<?php echo JHTML::_('grid.sort',   JText::_('DESCRIPTION'), 'g.grp_cm_groupe', @$lists['order_Dir'], @$lists['order'] ); ?>
+ 					</th>
+ 					<th class="title" >
+ 						<?php echo JHTML::_('grid.sort',   JText::_('PUBLISHED'), 'g.published', @$lists['order_Dir'], @$lists['order'] ); ?>
+ 					</th>
+ 					<th class="title" >
+ 						<?php echo JHTML::_('grid.sort',   JText::_('ITEM_COUNT'), 'grp_nb_item', @$lists['order_Dir'], @$lists['order'] ); ?>
+ 					</th>
+ 					<th  width="5px" class="title">
+ 						<?php echo JHTML::_('grid.sort',   JText::_('ID'), 'g.grp_id_groupe', @$lists['order_Dir'], @$lists['order'] ); ?>
+ 					</th>
+ 				<tr>
+ 			</thead>
+ 			<tfoot>
+ 				<tr>
+ 					<td colspan="7">
+ 						<?php echo $pageNav->getListFooter(); ?>
+ 					</td>
+ 				</tr>
+ 			</tfoot>
+ 			<tbody>
+ 			<?php
+ 			$k = 0;
+ 			if ($rows)
+ 			for ($i=0, $n=count($rows); $i < $n; $i++) {
+ 				$row = $rows[$i];
         $published = JHTML::_('grid.published', $row, $i );
-				$link 		= JRoute::_( 'index.php?option=com_hecmailing&task=edit&cid[]='. $row->grp_id_groupe );
-        $checked = JHTML::_('grid.id', $i, $row->grp_id_groupe ); 
-				//$checked 	= JHTML::_('grid.checkedout',   $row, $i );
-				?>
-				<tr class="<?php echo "row$k"; ?>">
-					<td width="5px">
-						<?php echo $pageNav->getRowOffset( $i ); ?>
-					</td>
-					<td width="5px">
+ 				$link 		= JRoute::_( 'index.php?option=com_hecmailing&task=edit&cid[]='. $row->grp_id_groupe );
+         $checked = JHTML::_('grid.id', $i, $row->grp_id_groupe ); 
+ 				//$checked 	= JHTML::_('grid.checkedout',   $row, $i );
+      ?>
+      <tr class="<?php echo "row$k"; ?>">
+      <td width="5px"><?php echo $pageNav->getRowOffset( $i ); ?></td>
+			<td width="5px">
 						<?php echo $checked; ?>
-					</td>
-					
-					<td width="40%">
+			</td>
+				<td width="40%">
 					<?php
 					if (JTable::isCheckedOut($user->get ('id'), $row->checked_out )) :
 						echo $row->grp_nm_groupe;
@@ -117,54 +109,48 @@ class HTML_hecmailing
 						<span class="editlinktip hasTip" title="<?php echo JText::_( 'EDIT_GROUP' );?>::<?php echo $row->grp_nm_groupe."(".$row->grp_id_groupe.")"; ?>">
 						<a href="<?php echo $link; ?>">
 							<?php echo $row->grp_nm_groupe; ?></a> </span>
-						<?php
-					endif;
-					?>
-					</td>
-					
+ 						<?php
+ 					endif;
+ 					?>
+ 					</td>
 					<td>
-						
 							<?php echo $row->grp_cm_groupe; ?>
 					</td>
 						<td width="30px" class="at_published" align="center">
-						  
 							<?php echo $published ?>
 					</td>
 						<td width="30px">
-						
 							<?php echo $row->grp_nb_item; ?>
 					</td>
 					<td>
-					<?php
-					if (JTable::isCheckedOut($user->get ('id'), $row->checked_out )) :
-						echo $row->grp_id_groupe;
-					else :
-						?>
-						<span class="editlinktip hasTip" title="<?php echo JText::_( 'EDIT_GROUP' );?>::<?php echo $row->grp_nm_groupe."(".$row->grp_id_groupe.")"; ?>">
-						<a href="<?php echo $link; ?>">
-							<?php echo $row->grp_id_groupe; ?></a> </span>
-						<?php
-					endif;
-					?>
-					</td>
+ 					<?php
+  					if (JTable::isCheckedOut($user->get ('id'), $row->checked_out )) :
+  						echo $row->grp_id_groupe;
+ 					else :
+ 						?>
+ 						<span class="editlinktip hasTip" title="<?php echo JText::_( 'EDIT_GROUP' );?>::<?php echo $row->grp_nm_groupe."(".$row->grp_id_groupe.")"; ?>">
+ 						<a href="<?php echo $link; ?>">
+  							<?php echo $row->grp_id_groupe; ?></a> </span>
+  						<?php
+ 					endif;
+ 					?>
+ 					</td>
 				</tr>
 				<?php
 				$k = 1 - $k;
 			}
 			?>
 			</tbody>
-			</table>
-
+ 			</table>
 		<input type="hidden" name="option" value="com_hecmailing" />
-		<input type="hidden" name="task" value="" />
-		<input type="hidden" name="boxchecked" value="0" />
-		<input type="hidden" name="filter_order" value="<?php echo $lists['order']; ?>" />
+ 		<input type="hidden" name="task" value="" />
+ 		<input type="hidden" name="boxchecked" value="0" />
+ 		<input type="hidden" name="filter_order" value="<?php echo $lists['order']; ?>" />
 		<input type="hidden" name="filter_order_Dir" value="<?php echo $lists['order_Dir']; ?>" />
 		<?php echo JHTML::_( 'form.token' ); ?>
 		<div class="warning"><?php echo  JText::_( 'WARNING_CHANGE_GROUP' ); ?></div>
 		</form>
 		<?php
-		
 	}
 
 /**
@@ -177,471 +163,203 @@ class HTML_hecmailing
  * @param Joomla user list (like Html Select Option)
  * 
  **/        
-	function editObject( &$row, &$lists, $detail, &$params, $users, $jgroups ) {
-
-		JRequest::setVar( 'hidemainmenu', 1 );
-
-		if ($row->image == '') {
-			$row->image = 'blank.png';
-		}
-
-		JHTML::_('behavior.tooltip');
-		jimport('joomla.html.pane');
-        // TODO: allowAllClose should default true in J!1.6, so remove the array when it does.
-		$pane = &JPane::getInstance('sliders', array('allowAllClose' => true));
-
-		JFilterOutput::objectHTMLSafe( $row, ENT_QUOTES, 'misc' );
-		$cparams = JComponentHelper::getParams ('com_hecmailing');
-		$document =& JFactory::getDocument();
-		//$burl = JURI::base();
-		$burl = "../";
-		$document->addScript($burl."components/com_hecmailing/libraries/jt/dom-drag.js");
-		$document->addScript($burl."components/com_hecmailing/libraries/jt/jt_.js");
-		$document->addScript($burl."components/com_hecmailing/libraries/jt/jt_DialogBox.js");
-		$document->addScript($burl."components/com_hecmailing/libraries/jt/jt_AppDialogs.js");
-		$document->addStyleSheet($burl."components/com_hecmailing/libraries/jt/jt_DialogBox.css");
-		$document->addStyleSheet($burl."components/com_hecmailing/libraries/jt/veils.css");
-		
-		?>
-		 
-	<LINK rel="stylesheet" type="text/css" href="../components/com_hecmailing/css/dialog.css">
-	<div id="dialog_container"></div>
-	<div id="dialog" class="hecdialog" name="dialog" style="display:none;"  >
-          <!--<div class="dlgheader"><h1><?php echo JText::_( 'NEW USER' ); ?></h1></div>-->
-          <div class="image"><img src="../components/com_hecmailing/images/user64.png" ></div>
-          <div class="content"><br/>
-          <?php echo JText::_('SELECT_USER_BELOW'); ?><br/><br/>
-          <?php echo JText::_('USER')." : ".$users ?></div>
-          
-          <div class="buttons"><button onclick="javascript:addUser();return false;"><img src="../components/com_hecmailing/images/ok16.png" ><?php echo JText::_('ADD'); ?></button><button onclick="javascript:cancel();return false;"><img src="../components/com_hecmailing/images/cancel16.png" ><?php echo JText::_('CANCEL'); ?></button></div> 
-      </div>
-       <div id="dialog2" name="dialog2" class="hecdialog" style="display:none;" >
-          <!--<div class="dlgheader"><h1><?php echo JText::_( 'NEW GROUP' ); ?></h1></div>-->
-           <div class="image" ><img width="64px" src="../components/com_hecmailing/images/group64.png" ></div>
-           <div class="content">
+	function editObject( &$row, &$lists, $detail, &$params, $users, $jgroups, $perms ) {
+  		JRequest::setVar( 'hidemainmenu', 1 );
+   		if (!isset($row))
+   		{
+    			$row = new StdClass;
+    			$row->image='blank.png';
+    			$row->id=0;
+    			$row->grp_id_groupe=0;
+    			$row->grp_nm_groupe='';
+    			$row->grp_cm_groupe='';
+    	}
+    	JHTML::_('behavior.tooltip');
+    	jimport('joomla.html.pane');
+      // TODO: allowAllClose should default true in J!1.6, so remove the array when it does.
+    	$pane = &JPane::getInstance('sliders', array('allowAllClose' => true));
+    	JFilterOutput::objectHTMLSafe( $row, ENT_QUOTES, 'misc' );
+    	$cparams = JComponentHelper::getParams ('com_hecmailing');
+    	$document =& JFactory::getDocument();
+    	$burl = "../";
+    	$document->addScript($burl."components/com_hecmailing/libraries/jt/dom-drag.js");
+    	$document->addScript($burl."components/com_hecmailing/libraries/jt/jt_.js");
+    	$document->addScript($burl."components/com_hecmailing/libraries/jt/jt_DialogBox.js");
+    	$document->addScript($burl."components/com_hecmailing/libraries/jt/jt_AppDialogs.js");
+    	$document->addStyleSheet($burl."components/com_hecmailing/libraries/jt/jt_DialogBox.css");
+    	$document->addStyleSheet($burl."components/com_hecmailing/libraries/jt/veils.css");
+    	$document->addScript("components/com_hecmailing/admin.hecmailing.js");
+?>
+	<script type="text/javascript">
+  <!--
+  		jt_DialogBox.imagePath = '../components/com_hecmailing/libraries/jt/';
+  		jt_DialogBox.imagePath = '<?php echo JURI::base( true ).'/components/com_hecmailing/libraries/jt/';?>';
+  		submit_MustName = '<?php echo JText::_( 'YOU_MUST_PROVIDE_A_NAME', true ); ?>';
+  		text_user ="<?php echo JText::_('USER', true); ?>";
+  		text_mail="<?php echo JText::_('EMAIL', true); ?>";
+  		text_group="<?php echo JText::_('GROUP', true); ?>";
+  		text_noitem='<?php echo JText::_("NO_SELECTED_ITEM"); ?>';
+  		text_wantremove='<?php echo JText::_('WANT_REMOVE', true) ?>';
+  		text_items='<?php echo JText::_('ITEMS', true) ?> ';
+  		text_perms='<?php echo JText::_('PERMISSIONS', true) ?> ';
+  		text_noperm='<?php echo JText::_("NO_SELECTED_PERM_ITEM"); ?>';
+  //-->
+  </script>
+  <LINK rel="stylesheet" type="text/css" href="../components/com_hecmailing/css/dialog.css">
+  <div id="dialog_container"></div>
+  <div id="dialog" class="hecdialog" style="display:none;"  >
+  <div id='dialog_title' style="display:none;"><?php echo JText::_( "NEW_USER" ); ?></div>
+  <div class="image"><img src="../components/com_hecmailing/images/user64.png" ></div>
+  <div class="content"><br/><?php echo JText::_('SELECT_USER_BELOW'); ?><br/><br/>
+   <?php echo JText::_('USER')." : ".$users ?></div>
+     <div class="buttons"><button onclick="javascript:addUser();return false;"><img src="../components/com_hecmailing/images/ok16.png" ><?php echo JText::_('ADD'); ?></button><button onclick="javascript:cancel();return false;"><img src="../components/com_hecmailing/images/cancel16.png" ><?php echo JText::_('CANCEL'); ?></button></div> 
+     </div>
+      <div id="dialog2"  class="hecdialog" style="display:none;" >
+      <div id='dialog2_title' style="display:none;"><?php echo JText::_( "NEW_GROUP" ); ?></div>
+         <div class="image" ><img width="64px" src="../components/com_hecmailing/images/group64.png" ></div>
+         <div class="content">
            <?php echo JText::_('SELECT_GROUP_BELOW') ?><br/><br/>
-                  <?php echo JText::_('GROUP')." : ".$jgroups ?>
-                  
-                  </div>
-                <div class="buttons"><button onclick="javascript:addGroupe();return false;"><img src="../components/com_hecmailing/images/ok16.png" ><?php echo JText::_('ADD'); ?></button><button onclick="javascript:cancel();return false;"><img src="../components/com_hecmailing/images/cancel16.png" ><?php echo JText::_('CANCEL'); ?></button></div> 
-          </div>
-      
-      <div id="dialog3" name="dialog3" class="hecdialog" style="display:none;">
-          <!--<div class="dlgheader"><h1><?php echo JText::_( 'DELETE' ); ?></h1></div>-->
-                <div class="image" ><img width="64px" src="../components/com_hecmailing/images/poubelle64.png" ></div>
-                <div id="dialog3_msg" name="dialog3_msg" class="content"><?php echo JText::_('REMOVE_ALL_SELECTED'); ?></div>
-          
-                <div class="buttons"><button onclick="javascript:deleteRows();return false;"><img src="../components/com_hecmailing/images/ok16.png" ><?php echo JText::_('REMOVE'); ?></button><button onclick="javascript:cancel();return false;"><img src="../components/com_hecmailing/images/cancel16.png" ><?php echo JText::_('CANCEL'); ?></button></div> 
-          
+           <?php echo JText::_('GROUP')." : ".$jgroups ?>
+         </div>
+         <div class="buttons"><button onclick="javascript:addGroupe();return false;"><img src="../components/com_hecmailing/images/ok16.png" ><?php echo JText::_('ADD'); ?></button><button onclick="javascript:cancel();return false;"><img src="../components/com_hecmailing/images/cancel16.png" ><?php echo JText::_('CANCEL'); ?></button></div> 
       </div>
-      <div id="dialog4" name="dialog4" class="hecdialog" style="display:none;">
-          <!--<div class="dlgheader"><h1><?php echo JText::_( 'NEW MAIL' ); ?></h1></div>-->
-           <div class="image" ><img width="64px" src="../components/com_hecmailing/images/email64.png" ></div>
-           <div class="content">
+      <div id="dialog3"  class="hecdialog" style="display:none;">
+      <div id='dialog3_title' style="display:none;"><?php echo JText::_( "DELETE" ); ?></div>
+         <div class="image" ><img width="64px" src="../components/com_hecmailing/images/poubelle64.png" ></div>
+         <div id="dialog3_msg"  class="content"><?php echo JText::_('REMOVE_ALL_SELECTED'); ?></div>
+         <div class="buttons"><button onclick="javascript:deleteRows();return false;"><img src="../components/com_hecmailing/images/ok16.png" ><?php echo JText::_('REMOVE'); ?></button><button onclick="javascript:cancel();return false;"><img src="../components/com_hecmailing/images/cancel16.png" ><?php echo JText::_('CANCEL'); ?></button></div> 
+      </div>
+      <div id="dialog4"  class="hecdialog" style="display:none;">
+      	<div id='dialog4_title' style="display:none;"><?php echo JText::_( "NEW_MAIL" ); ?></div>	
+         <div class="image" ><img width="64px" src="../components/com_hecmailing/images/email64.png" ></div>
+         <div class="content">
            <?php echo JText::_('ENTER_EMAIL_BELOW') ?><br/><br/>
-                  <?php echo JText::_('EMAIL')." : "?><input type="text" name="newmail" id="newmail" value="" width="95%" />
-                   </div>
-                <div class="buttons"><button onclick="javascript:addMail();return false;"><img src="../components/com_hecmailing/images/ok16.png" ><?php echo JText::_('ADD'); ?></button><button onclick="javascript:cancel();return false;"><img src="../components/com_hecmailing/images/cancel16.png" ><?php echo JText::_('CANCEL'); ?></button></div> 
-          </div>
-      <script type="text/javascript">
-    jt_DialogBox.imagePath = '../components/com_hecmailing/libraries/jt/';
-    
-    
-     function createContent(cid,title, width) {
-		dlgbox = new jt_DialogBox(true);
-
-		dlgbox.setTitle(title);
-		dlgbox.setContent(document.getElementById(cid).innerHTML);
-		dlgbox.setWidth(width);
-		btnnewuser = document.getElementById('btnnewuser');
-		x = 30;
-		y = 100;
-		dlgbox.moveTo(x,y);
+           <?php echo JText::_('EMAIL')." : "?><input type="text" name="newmail" id="newmail" value="" width="95%" />
+         </div>
+         <div class="buttons"><button onclick="javascript:addMail();return false;"><img src="../components/com_hecmailing/images/ok16.png" ><?php echo JText::_('ADD'); ?></button><button onclick="javascript:cancel();return false;"><img src="../components/com_hecmailing/images/cancel16.png" ><?php echo JText::_('CANCEL'); ?></button></div> 
+      </div>
+      <div id="dialog5" class="hecdialog"  style="display:none;"  >
+      	<div id='dialog5_title' style="display:none;"><?php echo JText::_( "NEW_USER_PERM" ); ?></div>
+         <div class="image"><img src="../components/com_hecmailing/images/user64.png" ></div>
+         <div class="content"><br/>
+			<table width="100%"><tr><td colspan="2">
+           <?php echo JText::_('SELECT_USER_BELOW'); ?><br/></td></tr>
+		   <tr><td><?php echo JText::_('USER')." : </td><td>".$users ?></td></tr>
+		   <tr><td colspan="2"><?php echo JText::_('RIGHTS'); ?></td></tr>
+		   <tr><td><?php echo JText::_('RIGHT_SEND_MAIL'). ":"; ?></td><td><input type="checkbox" name="right_send" id="right_send" checked="checked"></td></tr>
+		   <!--<tr><td><?php echo JText::_('RIGHT_EDIT'). ":"; ?></td><td><input type="checkbox" name="right_edit" id="right_edit" ></td></tr>-->
+		   <tr><td><?php echo JText::_('RIGHT_MANAGE'). ":"; ?></td><td><input type="checkbox" name="right_manage" id="right_manage"></td></tr>
+		   <tr><td><?php echo JText::_('RIGHT_GRANT'). ":"; ?></td><td><input type="checkbox" name="right_grant" id="right_grant"></td></tr>
+		   </table>
+		   </div>
+        <div class="buttons"><button onclick="javascript:addUserPerm();return false;"><img src="../components/com_hecmailing/images/ok16.png" ><?php echo JText::_('ADD'); ?></button><button onclick="javascript:cancel();return false;"><img src="../components/com_hecmailing/images/cancel16.png" ><?php echo JText::_('CANCEL'); ?></button></div> 
+   </div>
+   <div id="dialog6" class="hecdialog" style="display:none;" >
+   		<div id='dialog6_title' style="display:none;"><?php echo JText::_( "NEW_GROUP_PERM" ); ?></div>
+        <div class="image" ><img width="64px" src="../components/com_hecmailing/images/group64.png" ></div>
+        <div class="content">
+		<table width="100%">
+			<tr><td colspan="2"><?php echo JText::_('SELECT_GROUP_BELOW') ?><br/></td></tr>
+			<tr><td><?php echo JText::_('GROUP')." : </td><td>".$jgroups ?></td></tr>
+		<tr><td colspan="2"><?php echo JText::_('RIGHTS'); ?></td></tr>
+		   <tr><td><?php echo JText::_('RIGHT_SEND_MAIL'). ":"; ?></td><td><input type="checkbox" name="rightg_send" id="rightg_send" checked="checked"></td></tr>
+		   <tr><td><?php echo JText::_('RIGHT_MANAGE'). ":"; ?></td><td><input type="checkbox" name="rightg_manage" id="rightg_manage" ></td></tr>
+		   <tr><td><?php echo JText::_('RIGHT_GRANT'). ":"; ?></td><td><input type="checkbox" name="rightg_grant" id="rightg_grant" ></td></tr>
+		</table>
 		
-		return (dlgbox);
-	}
-	
-
-	dlg1 = null;
-	dlg2 = null;
-	dlg3 = null;
-	dlg4 = null;
-	var newuser=null;	
-	var newmail=null;
-	var newgroupe=null;
-		
-
-</script>
-		<script language="javascript" type="text/javascript">
-		<!--
-		function submitbutton(pressbutton) {
-			var form = document.adminForm;
-			if (pressbutton == 'cancel') {
-				submitform( pressbutton );
-				return;
-			}
-
-			// do field validation
-			if ( form.name.value == "" ) {
-				alert( "<?php echo JText::_( 'YOU MUST PROVIDE A NAME', true ); ?>" );
-			} else {
-				submitform( pressbutton );
-			}
-		}
-		
-		function showAddNewUser()
-		{
-        
-	      	if (dlg1 == null) 
-	      	{
-				
-				dlg1 = createContent('dialog','<?php echo JText::_( "NEW USER" ); ?>', 300);
-				dlgNode = dlg1.getContentNode();
-				l = dlgNode.getElementsByTagName('select');
-				for (i in l)
-				{
-					el = l[i];
-					
-					if (el.id=='newuser')
-					{
-						newuser=el;
-						
-					}
-					
-				}	
-			}
-		
-		dlg1.show();
-      	return false;  
-    }
-    
-    	function showAddNewMail()
-		{
-        //document.getElementById("dialog4").style.visibility = "visible";
-        if (dlg4 == null) 
-	    {
-				dlg4 = createContent('dialog4','<?php echo JText::_( "NEW MAIL" ); ?>', 300);
-				dlgNode = dlg4.getContentNode();
-				l = dlgNode.getElementsByTagName('input');
-				for (i in l)
-				{
-					el = l[i];
-					
-					if (el.id=='newmail')
-					{
-						newmail=el;
-					}
-					
-				}	
-		}	
-        dlg4.show();
-      
-        return false;  
-    }
-	   function showAddNewGroupe()
-		{
-        if (dlg2==null)
-        {
-        	dlg2 = createContent('dialog2','<?php echo JText::_( "NEW GROUP" ); ?>', 300);
-        	dlgNode = dlg2.getContentNode();
-				l = dlgNode.getElementsByTagName('select');
-				for (i in l)
-				{
-					el = l[i];
-					
-					if (el.id=='newgroupe')
-					{
-						newgroupe=el;
-					}
-					
-				}	
-        }
-        dlg2.show();
-        return false;  
-    }
-    function showDeleteEntry()
-    {
-        
-        var msg = document.getElementById("dialog3_msg");
-        var table = document.getElementById("detail");  
-        var rowCount = table.rows.length;  
-        nb=0;
-
-        for(var i=0; i<rowCount; i++) 
-        {  
-            var row = table.rows[i];  
-            var chkbox = row.cells[0].childNodes[0];  
-            if(null != chkbox && true == chkbox.checked) 
-            {
-                nb++;         
-            }  
-        }
-        if (nb>0)
-        {
-          if (dlg3==null)
-          	dlg3 = createContent('dialog3','<?php echo JText::_( "DELETE" ); ?>', 300);
-          dlg3.show();
-          msg.innerHTML = '<?php echo JText::_('WANT_REMOVE', true) ?>'+nb+' <?php echo JText::_('ITEMS', true) ?> '; 
-        }
-        else
-        {
-          alert('<?php echo JText::_("NO_SELECTED_ITEM"); ?>');
-        }
-        return false;  
-    
-    }    
-    function addUser()
-    {
-        var nbnew = document.getElementById("nbnew");
-        //document.getElementById("dialog").style.visibility = "hidden";
-        dlg1.hide();
-        //var user = document.getElementById("newuser");
-        user=newuser;
-        
-        tab=document.getElementById("detail");
-        tabBody=tab.getElementsByTagName("TBODY").item(0);
-         row=document.createElement("TR");
-         cell0 = document.createElement("TD");
-         cell1 = document.createElement("TD");
-         cell2 = document.createElement("TD");
-         chknode = document.createElement("input");
-         n=0;
-         n=nbnew.value;
-         n++;
-         chknode.name= 'suppressnew'+n;
-         chknode.id= 'suppressnew'+n;
-         chknode.value=0;
-         chknode.type="checkbox";
-         img = document.createElement("img");
-         img.src="../components/com_hecmailing/images/user16.png";
-         textnode1=document.createTextNode("<?php echo JText::_('USER', true); ?>");
-         textnode2=document.createTextNode(user.options[user.selectedIndex].text);
-         hid = document.createElement("input");
-         hid.name= 'new'+n;
-         hid.id= 'new'+n;
-         hid.type="hidden";
-         
-         hid.value= "2;"+user.value;
-         cell0.appendChild(chknode);
-         cell1.appendChild(img);
-         cell1.appendChild(textnode1);
-         cell2.appendChild(textnode2);
-         cell0.appendChild(hid);
-         row.appendChild(cell0);
-         row.appendChild(cell1);
-         row.appendChild(cell2);
-         tabBody.appendChild(row);
-      
-         
-         nbnew.value=n;
-    }
-    
-    function addMail()
-    {
-        var nbnew = document.getElementById("nbnew");
-        //document.getElementById("dialog4").style.visibility = "hidden";
-        dlg4.hide();
-        //var mail = document.getElementById("newmail");
-        mail=newmail;
-        tab=document.getElementById("detail");
-        tabBody=tab.getElementsByTagName("TBODY").item(0);
-         row=document.createElement("TR");
-         cell0 = document.createElement("TD");
-         cell1 = document.createElement("TD");
-         cell2 = document.createElement("TD");
-         chknode = document.createElement("input");
-         n=0;
-         n=nbnew.value;
-         n++;
-         chknode.name= 'suppressnew'+n;
-         chknode.id= 'suppressnew'+n;
-         chknode.value=0;
-         chknode.type="checkbox";
-         img = document.createElement("img");
-         img.src="../components/com_hecmailing/images/email16.png";
-         textnode1=document.createTextNode("<?php echo JText::_('EMAIL', true); ?>");
-         textnode2=document.createTextNode(mail.value);
-         hid = document.createElement("input");
-         hid.name= 'new'+n;
-         hid.id= 'new'+n;
-         hid.type="hidden";
-         
-         hid.value= "4;"+mail.value;
-         cell0.appendChild(chknode);
-         cell1.appendChild(img);
-         cell1.appendChild(textnode1);
-         cell2.appendChild(textnode2);
-         cell0.appendChild(hid);
-         row.appendChild(cell0);
-         row.appendChild(cell1);
-         row.appendChild(cell2);
-         tabBody.appendChild(row);
-      
-         
-         nbnew.value=n;
-    }
-    
-     function addGroupe()
-    {
-        var nbnew = document.getElementById("nbnew");
-        //document.getElementById("dialog2").style.visibility = "hidden";
-        dlg2.hide();
-        //var grp = document.getElementById("newgroupe");
-        grp = newgroupe;
-        tab=document.getElementById("detail");
-        tabBody=tab.getElementsByTagName("TBODY").item(0);
-         row=document.createElement("TR");
-         cell0 = document.createElement("TD");
-         cell1 = document.createElement("TD");
-         cell2 = document.createElement("TD");
-         chknode = document.createElement("input");
-         n=0;
-         n=nbnew.value;
-         n++;
-         hid = document.createElement("input");
-         hid.name= 'new'+n;
-         hid.id= 'new'+n;
-         hid.type="hidden";
-         img = document.createElement("img");
-         img.src="../components/com_hecmailing/images/group16.png";
-         hid.value= "3;"+grp.value;
-         chknode.name= 'suppressnew'+n;
-         chknode.id= 'suppressnew'+n;
-         chknode.value=0;
-         chknode.type="checkbox";
-         textnode1=document.createTextNode("<?php echo JText::_('GROUP', true); ?>");
-         textnode2=document.createTextNode(grp.options[grp.selectedIndex].text);
-         cell0.appendChild(chknode);
-         cell0.appendChild(hid);
-         cell1.appendChild(img);
-         cell1.appendChild(textnode1);
-         cell2.appendChild(textnode2);
-         row.appendChild(cell0);
-         row.appendChild(cell1);
-         row.appendChild(cell2);
-         tabBody.appendChild(row);
-         nbnew.value=n;
-    }
-    
-    function deleteRows() {  
-       try {  
-            //document.getElementById("dialog3").style.visibility = "hidden";
-            dlg3.hide();
-             var todel = document.getElementById('todel');
-             var table = document.getElementById("detail");  
-             var rowCount = table.rows.length;  
-   
-             for(var i=0; i<rowCount; i++) {  
-                 var row = table.rows[i];  
-                 var chkbox = row.cells[0].childNodes[0];  
-                 if(null != chkbox && true == chkbox.checked) {
-                     
-                      todel.value+=chkbox.value+';';
-                       
-                     table.deleteRow(i);  
-                     rowCount--;  
-                     i--;  
-                     
-                 }  
-   
-             }  
-      }catch(e) {  
-             alert(e);  
-       }  
-    }  
-
-
-
-    
-    function cancel()
-    {
-            /*document.getElementById("dialog").style.visibility = "hidden";
-            document.getElementById("dialog2").style.visibility = "hidden";
-            document.getElementById("dialog3").style.visibility = "hidden";
-            document.getElementById("dialog4").style.visibility = "hidden";*/
-            if (dlg1!=null)  dlg1.hide();
-            if (dlg2!=null) dlg2.hide();
-            if (dlg3!=null) dlg3.hide();
-            if (dlg4!=null) dlg4.hide();
-    }
-		//-->
-		</script>
-
-		<form action="index.php" method="post" name="adminForm">
-    
-  
+        </div>
+        <div class="buttons"><button onclick="javascript:addGroupePerm();return false;"><img src="../components/com_hecmailing/images/ok16.png" ><?php echo JText::_('ADD'); ?></button><button onclick="javascript:cancel();return false;"><img src="../components/com_hecmailing/images/cancel16.png" ><?php echo JText::_('CANCEL'); ?></button></div> 
+   </div>
+   <div id="dialog7"  class="hecdialog" style="display:none;">
+   <div id='dialog7_title' style="display:none;"><?php echo JText::_( "DELETE_PERM" ); ?></div>
+		<div class="image" ><img width="64px" src="../components/com_hecmailing/images/poubelle64.png" ></div>
+        <div id="dialog7_msg" class="content"><?php echo JText::_('REMOVE_ALL_SELECTED'); ?></div>
+        <div class="buttons"><button onclick="javascript:deleteRowsPerm();return false;"><img src="../components/com_hecmailing/images/ok16.png" ><?php echo JText::_('REMOVE'); ?></button><button onclick="javascript:cancel();return false;"><img src="../components/com_hecmailing/images/cancel16.png" ><?php echo JText::_('CANCEL'); ?></button></div> 
+    </div>
+	<form action="index.php" method="post" name="adminForm">
 		<div class="col">
-		  
-			<fieldset class="adminform">
-				<legend><?php echo JText::_( 'GROUP' ); ?></legend>
+			<fieldset class="adminform"><legend><?php echo JText::_( 'GROUP' ); ?></legend>
+			<table class="admintable">
+  			  <tr>
+    				<td class="key"><label for="name"><?php echo JText::_( 'ID' ); ?>:</label></td>
+		    		<td><?php echo $row->grp_id_groupe; ?><input type="hidden" name="grp_id_groupe" id="grp_id_groupe" value="<?php echo $row->grp_id_groupe; ?>" ></td>
+          </tr><tr>
+        		<td class="key"><label for="name"><?php echo JText::_( 'NAME' ); ?>:</label></td>
+        		<td ><input class="inputbox" type="text" name="grp_nm_groupe" id="grp_nm_groupe" size="60" maxlength="255" value="<?php echo $row->grp_nm_groupe; ?>" /></td>
+          </tr><tr>
+        		<td class="key"><label for="name"><?php echo JText::_( 'COMMENT' ); ?>:</label></td>
+        		<td ><textarea name="grp_cm_groupe" id="grp_cm_groupe" rows="3" cols="45" class="inputbox"><?php echo $row->grp_cm_groupe; ?></textarea></td>
+          </tr><tr>
+        		<td class="key"><label for="name"><?php echo JText::_( 'PUBLISHED' ); ?>:</label></td>
+        		<td ><fieldset class="radio"><?php echo $lists['published']; ?></fieldset></td>
+        	</tr></table>	</fieldset>
+        	<fieldset class="adminform">
+        	<legend><?php echo JText::_( 'DETAIL' ); ?></legend>
+             <button id="btnnewuser" onclick="javascript:showAddNewUser();return false;" ><img src="../components/com_hecmailing/images/user16.png" ><?php echo JText::_( 'NEW_USER' ); ?></button>
+             <button id="btnnewmail" onclick="javascript:showAddNewMail();return false;" ><img src="../components/com_hecmailing/images/email16.png" ><?php echo JText::_( 'NEW_MAIL' ); ?></button>
+             <button id="btnnewgroupe" onclick="javascript:showAddNewGroupe();return false;" ><img src="../components/com_hecmailing/images/group16.png" ><?php echo JText::_( 'NEW_GROUP' ); ?></button>
+             <button id="delete" onclick="javascript:showDeleteEntry();return false;" ><img src="../components/com_hecmailing/images/poubelle16.png" ><?php echo JText::_( 'DELETE' ); ?></button>
+             <button id="btnimport" onclick="javascript:showImport();return false;" ><img src="../components/com_hecmailing/images/email16.png" ><?php echo JText::_( 'IMPORT' ); ?></button>
+             <div id="dialog_import" name="dialog_import" class="hecdialogx" style="display:none;" >
+              <div class="header" ><?php echo JText::_( 'IMPORT_EMAIL' ); ?></div>
+               <div class="content">
+                <table style="width:100%;align:center;"><tr><th><?php echo JText::_('CHOOSE_FILE') ?></th><th><?php echo JText::_('DELIMITER') ?></th>
+                <th><?php echo JText::_('EMAIL_COLUMN') ?></th><th><?php echo JText::_('LENGTH') ?></th><th><?php echo JText::_('MODE') ?></th></tr>
 
-				<table class="admintable">
-				<tr>
-					<td class="key">
-						<label for="name">
-							<?php echo JText::_( 'ID' ); ?>:
-						</label>
-					</td>
-					<td >
-						<?php echo $row->grp_id_groupe; ?><input type="hidden" name="grp_id_groupe" id="grp_id_groupe" value="<?=$row->grp_id_groupe ?>" >
-					</td>
-				</tr>
-				<tr>
-					<td class="key">
-						<label for="name">
-							<?php echo JText::_( 'NAME' ); ?>:
-						</label>
-					</td>
-					<td >
-						<input class="inputbox" type="text" name="grp_nm_groupe" id="grp_nm_groupe" size="60" maxlength="255" value="<?php echo $row->grp_nm_groupe; ?>" />
-					</td>
-				</tr>
-				<tr>
-					<td class="key">
-						<label for="name">
-							<?php echo JText::_( 'COMMENT' ); ?>:
-						</label>
-					</td>
-					<td >
-							<textarea name="grp_cm_groupe" id="grp_cm_groupe" rows="3" cols="45" class="inputbox"><?php echo $row->grp_cm_groupe; ?></textarea>
-					</td>
-				</tr>
-				<tr>
-					<td class="key">
-						<label for="name">
-							<?php echo JText::_( 'PUBLISHED' ); ?>:
-						</label>
-					</td>
-					<td >
-					<?php
-              echo $lists['published'];					      
-           ?>
-						
-					</td>
-				</tr>
-				</table>
-			</fieldset>
-      
-			<fieldset class="adminform">
-				<legend><?php echo JText::_( 'DETAIL' ); ?></legend>
-        <button id="btnnewuser" onclick="javascript:showAddNewUser();return false;" ><img src="../components/com_hecmailing/images/user16.png" ><?php echo JText::_( 'NEW USER' ); ?></button>
-        <button id="btnnewmail" onclick="javascript:showAddNewMail();return false;" ><img src="../components/com_hecmailing/images/email16.png" ><?php echo JText::_( 'NEW MAIL' ); ?></button>
-        <button id="btnnewgroupe" onclick="javascript:showAddNewGroupe();return false;" ><img src="../components/com_hecmailing/images/group16.png" ><?php echo JText::_( 'NEW GROUP' ); ?></button>
-        <button id="delete" onclick="javascript:showDeleteEntry();return false;" ><img src="../components/com_hecmailing/images/poubelle16.png" ><?php echo JText::_( 'DELETE' ); ?></button>
-				<table class="adminlist" id="detail">
-				<thead>
-				  <th class="title"></th><th class="title"><?php echo JText::_('TYPE'); ?></th><th class="title"><?php echo JText::_('NAME'); ?></th>
-				</thead>
-				<tbody>
-				<?php 
-				  $i=0;$k=0;
-				  foreach ($detail as $r)
-				  {
-            echo "<tr class=\"row".$k."\"><td><input type=\"checkbox\" name=\"suppress".$i."\" id=\"suppress".$i."\" value=\"".$r[3]."\" ></td>";
-            $i++;
-            if ($k==1) $k=0;
-            else  $k=1;
+             <tr><td><input type="file" name="import_file" id="import_file" value="" width="95%" /></td>
+
+             <td style="align:center"><select name="import_delimiter" id="import_delimiter"  >
+
+                <option value="1"><?php echo JText::_('DELIMITER_TAB') ?></option>
+
+                <option value="2"><?php echo JText::_('DELIMITER_SEMI_COLON') ?></option>
+
+                <option value="3"><?php echo JText::_('DELIMITER_COLON') ?></option>
+
+                <option value="4"><?php echo JText::_('DELIMITER_SPACE') ?></option>
+
+                <option value="9"><?php echo JText::_('DELIMITER_FIXE') ?></option></select>   </td>
+
+              <td><input name="import_column" id="import_column" size="2" type="text"></td>
+
+              <td><input name="import_len" id="import_len" size="2" type="text"></td>
+
+              <td style="align:center"><select name="import_mode" id="import_mode"  >
+
+                <option value="1"><?php echo JText::_('MODE_APPEND') ?></option>
+
+                <option value="2"><?php echo JText::_('MODE_DELETE') ?></option>
+
+                <option value="3"><?php echo JText::_('MODE_REPLACE') ?></option></select></td>
+
+              </tr></table>
+
+           </div>
+
             
+
+        </div>
+
+				<table class="adminlist" id="detail">
+
+				<thead>
+
+				  <th class="title"></th><th class="title"><?php echo JText::_('TYPE'); ?></th><th class="title"><?php echo JText::_('NAME'); ?></th>
+
+				</thead>
+
+				<tbody>
+
+				<?php 
+
+				  $i=0;$k=0;
+          if ($detail)
+  				  foreach ($detail as $r)
+            {
+               echo "<tr class=\"row".$k."\"><td><input type=\"checkbox\" name=\"suppress".$i."\" id=\"suppress".$i."\" value=\"".$r[3]."\"></td>";
+               $i++;
+               if ($k==1) $k=0;
+               else  $k=1;
             switch($r[0])
             {
               case 1: 
@@ -658,31 +376,75 @@ class HTML_hecmailing
                   break;
             }
             echo "</tr>";
-          
           }
           echo "<input type=\"hidden\" name=\"nbold\" id=\"nbold\" value=\"".$i."\"/>";
           echo "<input type=\"hidden\" name=\"nbnew\" id=\"nbnew\" value=\"0\"/>";
           echo "<input type=\"hidden\" name=\"todel\" id=\"todel\" value=\"\"/>";
+          echo "<input type=\"hidden\" name=\"toimport\" id=\"toimport\" value=\"0\"/>";
         ?>				
-						
 				</tbody>
 				</table>
 			</fieldset>
+			<fieldset class="adminform">
+				<legend><?php echo JText::_( 'PERMISSIONS' ); ?></legend>
+				<button id="btnnewuser" onclick="javascript:showAddNewUserPerm();return false;" ><img src="../components/com_hecmailing/images/user16.png" ><?php echo JText::_( 'NEW_USER' ); ?></button>		
+				<button id="btnnewgroupe" onclick="javascript:showAddNewGroupePerm();return false;" ><img src="../components/com_hecmailing/images/group16.png" ><?php echo JText::_( 'NEW_GROUP' ); ?></button>
+				<button id="delete" onclick="javascript:showDeletePermEntry();return false;" ><img src="../components/com_hecmailing/images/poubelle16.png" ><?php echo JText::_( 'DELETE' ); ?></button>
+				<table class="adminlist" id="permissions">
+				<thead>
+				  <th class="title"></th><th class="title"><?php echo JText::_('TYPE'); ?></th><th class="title"><?php echo JText::_('NAME'); ?></th><th class="title"><?php echo JText::_('RIGHT_SEND_MAIL'); ?></th>
+				  <th class="title"><?php echo JText::_('RIGHT_MANAGE'); ?></th><th class="title"><?php echo JText::_('RIGHT_GRANT'); ?></th>
+				</thead>
+				<tbody>
+					<?php 
+				  $i=0;$k=0;
+          if ($perms)
+				  foreach ($perms as $r)
+				  {
+						$i++;
+            			echo "<tr class=\"row".$k."\"><td><input type=\"checkbox\" name=\"suppressperm".$i."\" id=\"suppressperm".$i."\" value=\"".$r[2]."-".$r[0]."-".$r[1]."\" >
+							<input type=\"hidden\" name=\"oldperm".$i."\" id=\"oldperm".$i."\" value=\"".$r[2].";".$r[0].";".$r[1]."\"></td>";
+			            
+			            if ($k==1) $k=0;
+			            else  $k=1;
+            			if ($r[0]>0)
+            			{
+            				echo "<td><img src=\"../components/com_hecmailing/images/user16.png\" >".JText::_("USER")."</td><td>".$r[3]."</td>";
+	           			}
+            			else
+            			{
+            				echo "<td><img src=\"../components/com_hecmailing/images/group16.png\" >".JText::_("GROUP")."</td><td>".$r[4]."</td>";
+            			}
+						$rights=$r[5];
+												
+						if (($rights & 1) == 1) $checked="checked=\"checked\"";
+						else $checked="";
+						echo "<td><input type=\"checkbox\" id=\"perm_send".$i."\" name=\"perm_send".$i."\" ".$checked." value=\"1\"></td>";
+						if (($rights & 2) == 2) $checked="checked=\"checked\"";
+						else $checked="";
+						echo "<td><input type=\"checkbox\" id=\"perm_manage".$i."\" name=\"perm_manage".$i."\" ".$checked." value=\"1\"></td>";
+						if (($rights & 4) == 4) $checked="checked=\"checked\"";
+						else $checked="";
+						echo "<td><input type=\"checkbox\" id=\"perm_grant".$i."\" name=\"perm_grant".$i."\" ".$checked." value=\"1\"></td>";
+            			echo "</tr>";
+          		  } 
+	      echo "<input type=\"hidden\" name=\"nboldperm\" id=\"nboldperm\" value=\"".$i."\"/>";
+          echo "<input type=\"hidden\" name=\"nbnewperm\" id=\"nbnewperm\" value=\"0\"/>";
+          echo "<input type=\"hidden\" name=\"todelperm\" id=\"todelperm\" value=\"\"/>"; ?>      
+          </tbody></table>
+			</fieldset>
 		</div>
-
 		<div class="clr"></div>
-
-      
 		<input type="hidden" name="option" value="com_hecmailing" />
-		<input type="hidden" name="id" value="<?php echo $row->id; ?>" />
-		<input type="hidden" name="cid[]" value="<?php echo $row->id; ?>" />
-		
+		<input type="hidden" name="id" value="<?php echo $row->grp_id_groupe; ?>" />
+		<input type="hidden" name="cid[]" value="<?php echo $row->grp_id_groupe; ?>" />
 		<input type="hidden" name="task" value="" />
 		<?php echo JHTML::_( 'form.token' ); ?>
 		</form>
 		<?php
 	}
-	
+
+
 	/**
 	 * Methode that show template list
 	 * 
@@ -708,7 +470,6 @@ class HTML_hecmailing
 					<th width="100%" class="title" >
 						<?php echo JHTML::_('grid.sort',   JText::_('TEMPLATE'), 'msg_lb_message', @$lists['order_Dir'], @$lists['order'] ); ?>
 					</th>
-					
 					<th width="50px" class="title">
 						<?php echo JHTML::_('grid.sort',   JText::_('ID'), 'msg_id_message', @$lists['order_Dir'], @$lists['order'] ); ?>
 					</th>
@@ -725,10 +486,9 @@ class HTML_hecmailing
 			 	<?php
 			       $k = 0;
 			       for ($i=0, $n=count($rows); $i < $n; $i++) 
-             {
+	               {
 				        $row = $rows[$i];
-                $checked = JHTML::_('grid.id', $i, $row->msg_id_message ); 
-				
+      		          	$checked = JHTML::_('grid.id', $i, $row->msg_id_message ); 
 				?>
 				<tr class="<?php echo "row$k"; ?>">
 					<td width="5px">
@@ -737,14 +497,12 @@ class HTML_hecmailing
 					<td width="5px">
 						<?php echo $checked; ?>
 					</td>
-					
 					<td width="40%"><?php if ($row->msg_lb_message=='')
-										echo $row->msg_vl_subject;
+											echo $row->msg_vl_subject;
 										else
-										echo $row->msg_lb_message;
+											echo $row->msg_lb_message;
 						?></td>
-					<td width="40%"><?=$row->msg_id_message	?></td>
-					
+					<td width="40%"><?php echo $row->msg_id_message;	?></td>
 				</tr>
 				<?php
 				$k = 1 - $k;
@@ -752,7 +510,7 @@ class HTML_hecmailing
 			?>
 			</tbody>
 			</table>
-				<input type="hidden" name="option" value="com_hecmailing" />
+			<input type="hidden" name="option" value="com_hecmailing" />
 		    <input type="hidden" name="task" value="templates" />
 		    <input type="hidden" name="boxchecked" value="0" />
 		    <input type="hidden" name="filter_order" value="<?php echo $lists['order']; ?>" />
@@ -761,16 +519,16 @@ class HTML_hecmailing
    </form>
    <?php
   }
-  
+	
 /**
-	 * Methode that show contact list
-	 * 
-	 * @param array Template list
-	 * @param PageNav
-	 * @param array Options
-	 * @param array Variable list (order...)
-	 * 
-	 **/                    	
+ * Methode that show contact list
+ * 
+ * @param array Template list
+ * @param PageNav
+ * @param array Options
+ * @param array Variable list (order...)
+ * 
+ **/                    	
 	function showContact( $rows, $pageNav, $option, $lists )
 	{
     ?>	
@@ -787,7 +545,6 @@ class HTML_hecmailing
 					<th width="100%" class="title" >
 						<?php echo JHTML::_('grid.sort',   JText::_('CONTACT_TITLE'), 'ct_nm_contact', @$lists['order_Dir'], @$lists['order'] ); ?>
 					</th>
-					
 					<th width="50px" class="title">
 						<?php echo JHTML::_('grid.sort',   JText::_('CONTACT_ID'), 'ct_id_contact', @$lists['order_Dir'], @$lists['order'] ); ?>
 					</th>
@@ -804,22 +561,15 @@ class HTML_hecmailing
 			 	<?php
 			       $k = 0;
 			       for ($i=0, $n=count($rows); $i < $n; $i++) 
-             {
+	               {
 				        $row = $rows[$i];
                 		$checked = JHTML::_('grid.id', $i, $row->ct_id_contact ); 
-				
 				?>
 				<tr class="<?php echo "row$k"; ?>">
-					<td width="5px">
-						<?php echo $pageNav->getRowOffset( $i ); ?>
-					</td>
-					<td width="5px">
-						<?php echo $checked; ?>
-					</td>
-					
-					<td width="40%"><a href="index.php?option=com_hecmailing&task=editContact&contactid=<?= $row->ct_id_contact ?>" ><?=$row->ct_nm_contact	?></a></td>
-					<td width="40%"><?=$row->ct_id_contact	?></td>
-					
+					<td width="5px"><?php echo $pageNav->getRowOffset( $i ); ?></td>
+					<td width="5px"><?php echo $checked; ?></td>
+					<td width="40%"><a href="index.php?option=com_hecmailing&task=editContact&contactid=<?php echo $row->ct_id_contact; ?>" ><?php echo $row->ct_nm_contact; ?></a></td>
+					<td width="40%"><?php echo $row->ct_id_contact;	?></td>
 				</tr>
 				<?php
 				$k = 1 - $k;
@@ -827,7 +577,7 @@ class HTML_hecmailing
 			?>
 			</tbody>
 			</table>
-				<input type="hidden" name="option" value="com_hecmailing" />
+			<input type="hidden" name="option" value="com_hecmailing" />
 		    <input type="hidden" name="task" value="edit_contact" />
 		    <input type="hidden" name="boxchecked" value="0" />
 		    <input type="hidden" name="filter_order" value="<?php echo $lists['order']; ?>" />
@@ -836,39 +586,134 @@ class HTML_hecmailing
    </form>
    <?php
   }
+
   
+/**
+ * Methode that edit or create a contact
+ * 
+ * @param contact id
+ * @param HEC Mailing group list
+ * @param contact data (if edit)
+ * @param param list
+ * 
+ **/ 
   function editContact($id,$groups,$data,$param)
   {
   		JRequest::setVar( 'hidemainmenu', 1 );
-
-		if ($row->image == '') {
-			$row->image = 'blank.png';
-		}
-
 		JHTML::_('behavior.tooltip');
-  	$editor =& JFactory::getEditor();
-
-
+      	$editor =& JFactory::getEditor();
+      	// Cas d'un nouveau contact
+		if (!$data)
+		{
+			$data=new stdClass();
+			$data->ct_id_contact=0;	
+			$data->ct_nm_contact='';
+			$data->ct_vl_info='';
+			$data->ct_vl_template='{BODY}';
+			$data->ct_vl_prefixsujet='';
+		}
   ?>
   	<form action="index.php" method="post" name="adminForm">
     	<table class="admintable">
 			<tr><td class="key"><label for="name"><?php echo JText::_( 'ID_CONTACT' ); ?>:</label></td>
-				<td><?php echo $data->ct_id_contact; ?><input type="hidden" name="ct_id_contact" id="ct_id_contact" value="<?=$id ?>" ></td></tr>
+				<td><?php echo $data->ct_id_contact; ?><input type="hidden" name="ct_id_contact" id="ct_id_contact" value="<?php echo $id; ?>" ></td></tr>
 			<tr><td class="key"><label for="name"><?php echo JText::_( 'CONTACT_NAME' ); ?>:</label></td>
 				<td><input class="inputbox" type="text" name="ct_nm_contact" id="ct_nm_contact" size="30" maxlength="30" value="<?php echo $data->ct_nm_contact; ?>" /></td></tr>
 			<tr><td class="key"><label for="name"><?php echo JText::_( 'GROUP' ); ?>:</label></td>
 				<td ><?php  echo $groups; ?></td></tr>
 			<tr><td class="key"><label for="name"><?php echo JText::_( 'INFO' ); ?>:</label></td>
-				<td><?php echo $editor->display('ct_vl_info', $data->ct_vl_info, 400, 200, '60', '20', true); ?>
-					<!--<textarea name="ct_vl_info" id="ct_vl_info" rows="5" cols="45" class="inputbox"><?php echo $data->ct_vl_info; ?></textarea>--></td></tr>
+				<td><?php echo $editor->display('ct_vl_info', $data->ct_vl_info, 400, 200, '60', '20', true); ?></td></tr>
+		</table>
+		<hr>
+		<table>
+			<tr><td class="key"><label for="name"><?php echo JText::_( 'CONTACT_PREFIXSUJET' ); ?>:</label></td>
+				<td><input class="inputbox" type="text" name="ct_vl_prefixsujet" id="ct_vl_prefixsujet" size="30" maxlength="30" value="<?php echo $data->ct_vl_prefixsujet; ?>" /></td></tr>
 			
+			<tr><td class="key"><label for="name"><?php echo JText::_( 'CONTACT_TEMPLATE' ); ?>:</label></td>
+				<td><?php echo $editor->display('ct_vl_template', $data->ct_vl_template , 400, 200, '60', '20', true); ?></td></tr>
+				<tr><td></td><td><?php echo JText::_( 'CONTACT_TEMPLATE_HELP' ); ?></td></tr>
 		</table>
 		<input type="hidden" name="option" value="com_hecmailing" />
 		<input type="hidden" name="task" value="saveContact" />
 	</form>
-		
-<?php 
+	<?php 
   }
-  
+
+  /**
+ * Methode that show param and about screen
+ * 
+ * @param update base url
+ * 
+ **/ 
+  function showPanel($baseurl)
+	{
+	  JLoader::import ( 'helper',JPATH_COMPONENT_ADMINISTRATOR);
+	  $ver =   getComponentVersion();
+	  $latest =    getLatestComponentVersion($baseurl.'hecmailing.xml');  ?>
+	  <table width="100%">
+	  <tr valign="top"><td>
+	     <fieldset>
+	       <legend><?php echo JText::_( 'VERSION' ); ?></legend>
+	       	<table class="admintable">
+	        <tr><td class="key"><label for="name"><?php echo JText::_( 'VERSION' ); ?>:</label></td>
+	            <td><?php echo $ver; ?></td></tr>
+	       <?php
+	          if ($latest > $ver)
+	          {     ?>
+	                 <tr><td class="key"><label for="name"><?php echo JText::_( 'LATEST_VERSION' ); ?>:</label></td>
+	                       <td><?php echo $latest; ?>
+	                        <a href="index.php?option=com_hecmailing&task=upgrade" style="color:red"><?php echo JText::_( 'UPGRADE_COMPONENT' ); ?></a></td></tr>
+	       <?php
+	          }
+	          else {
+	          	    ?>
+	                 <tr><td class="key"><label for="name"><?php echo JText::_( 'LATEST_VERSION' ); ?>:</label></td>
+	                       <td><?php echo $latest; ?> <?php echo JText::_( 'UPTODATE_VERSION' ); ?></td></tr>
+	                <?php
+	          }
+	       ?>
+	        </table>
+
+	       </fieldset>
+
+	       <fieldset>
+
+			<legend><?php echo JText::_( 'DONATION' ); ?></legend>
+
+			<?php echo JText::_( 'DONATION_TEXT' ); ?><br><br>
+
+			<form action="https://www.paypal.com/cgi-bin/webscr" method="post">
+	        	<input type="hidden" name="cmd" value="_s-xclick">
+	        	<input type="hidden" name="encrypted" value="-----BEGIN PKCS7-----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-----END PKCS7-----">
+	        	<input type="image" src="https://www.paypal.com/<?php echo JText::_( 'en_US/GB'); ?>/i/btn/btn_donateCC_LG.gif" border="0" name="submit" alt="PayPal - The safer, easier way to pay online.">
+	        	<img alt="" border="0" src="https://www.paypal.com/fr_FR/i/scr/pixel.gif" width="1" height="1">
+	        </form>
+	      </fieldset>    </td><td>
+	      <fieldset>
+	        <legend>PARAMETRES</legend>
+	        <?php
+				if(version_compare(JVERSION,'1.6.0','<')){
+					$url = 'index.php?option=com_config&amp;controller=component&amp;component=com_hecmailing&amp;path=';
+				}
+				else {
+					// Modif Joomla 1.6+
+					$url = "index.php?option=com_config&view=component&component=com_hecmailing&path=&tmpl=component";
+				}
+	           echo '<iframe src="'. $url . '" width=100% height=600 scrolling=auto frameborder=0 > </iframe>';
+	        ?>
+
+	      </fieldset></td></tr></table>
+
+	   <?php
+
+	}    
+
+
+
+
+
+
+
 }
+
 ?>
