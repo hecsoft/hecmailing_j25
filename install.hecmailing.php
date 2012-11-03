@@ -3,7 +3,7 @@
 defined('_JEXEC') or die('Restricted access');
 
 /**
-* @version 1.7.6
+* @version 1.7.7
 * @package hecMailing for Joomla
 * @copyright Copyright (C) 2008-2011 Hecsoft All rights reserved.
 * @license GNU/GPL
@@ -26,7 +26,7 @@ defined('_JEXEC') or die('Restricted access');
 
 function com_install()
 {
-	$Component_Version="1.7.6";
+	$Component_Version="1.7.7";
     // First make sure that this version of Joomla is 1.5 or greater
     $version = new JVersion();
     if ( (real)$version->RELEASE < 1.5 ) {
@@ -88,6 +88,7 @@ function com_install()
     	</i><p>
     <h2>Change Log</h2>
     <p>
+	1.7.7   Corrige le probleme de traduction pour la selection des menu (Anglais et Allemand)<br>
 	1.7.6   Corrige le probleme d'envoi aux utilisateurs bloqu&eacute;s<br>
 	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Ajoute le nom du destinataire<br>
 	1.7.5 Corige le probleme de doublonage du message lors de l'envoie d'une demance de contact<br>
@@ -106,6 +107,7 @@ function com_install()
     </p>
 
 	<p><i>
+	1.7.7   Fixe Menu Selection Translation Missing (English and German)<br>
 	1.7.6   Fixe Can't send mail to blocked users<br>
                             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Feature Add recipient Name <br>
 	1.7.5   Fixe double message when send Contact<br>

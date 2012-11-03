@@ -1,7 +1,7 @@
 ***************************************************************
-*    HEC Mailing version 1.7.5 release notes                  *
+*    HEC Mailing version 1.7.7 release notes                  *
 *-------------------------------------------------------------*
-* by H.Cyr 5 nov 2009 (updated : 28 mar. 2012 )               *
+* by H.Cyr 5 nov 2009 (updated : 03 nov. 2012 )               *
 * @package hecMailing for Joomla                              *
 * @copyright Copyright (C) 2012 Hecsoft All rights reserved.  *
 * @license GNU/GPL                                            *
@@ -9,6 +9,7 @@
 
 CHANGE LOG
  Version  Date          Changes
+  1.7.7   03 nov. 2012  Fixe English and German translation missing for menu selection
   1.7.6   30 aug. 2012  Fixe Can't send mail to blocked users
                         Feature Add recipient Name 
   1.7.5   06 apr. 2012  Fixe double message when send Contact
