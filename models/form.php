@@ -340,8 +340,8 @@ class ModelhecMailingForm extends JModel
           $user =&JFactory::getUser();
           $userid = $user->get( 'id' );
           $listUserTypeAllowed = split(";",$admintype);
-          $query = "select count(*) FROM #__usergroups g LEFT JOIN _user_usergroup_map AS map ON map.group_id = g.id ";
-          $query.= "WHERE map.user_id=".(int) $userid." AND g.title IN (".join(",",$listUserTypeAllowed).")";
+          $query = "select count(*) FROM #__usergroups g LEFT JOIN #__user_usergroup_map AS map ON map.group_id = g.id ";
+          $query.= "WHERE map.user_id=".(int) $userid." AND g.title IN ('".join("','",$listUserTypeAllowed)."')";
           $db->setQuery($query);
           $rows=$db->loadRow();
           if (!$rows)

@@ -51,7 +51,7 @@ function showImport()
     var mydiv = document.getElementById('dialog_import');
 	if (mydiv.style.display== 'none')
 	{
-		mydiv.style.display = 'inline';
+		mydiv.style.display = 'block';
 	}
 	else
 	{

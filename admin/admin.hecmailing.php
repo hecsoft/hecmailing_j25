@@ -1,8 +1,8 @@
 <?php
 /**
- * @version 1.7.4
+ * @version 1.7.8
  * @package hecmailing
- * @copyright 2009-2012 Hecsoft.net
+ * @copyright 2009-2013 Hecsoft.net
  * @license http://www.gnu.org/licenses/gpl-3.0.html
  * @link http://joomla.hecsoft.net
  * @author H Cyr
@@ -346,6 +346,7 @@ function saveObject( $task )
 	$row	=& JTable::getInstance('groupe', 'Table');
 	$tmppost = JRequest::get( 'post' );
 	$tmpfile = JRequest::get( 'FILES' );
+	// $tmpfile = JRequest::getVar('jform', null, 'files', 'array');
 	$post=array();
 	$post['grp_id_groupe'] = $tmppost['grp_id_groupe'];
 	$post['grp_nm_groupe'] = $tmppost['grp_nm_groupe'];
@@ -440,30 +441,50 @@ function saveObject( $task )
     }
   }
   // Traite import fichier
-  if ($tmppost['toimport']=='1')
+  $msgimport='';
+  $f =   $tmpfile['import_file'];
+  if (isset($f) && strlen($f['name'])>0)
   {
-      $f =   $tmpfile['import_file'];
+	
+      
     
-    $log->addEntry(array('comment'=>"Import File=".$f['name']));
-      if ($f   )
+	     $log->addEntry(array('comment'=>"Import File=".$f['name']));
+      if (!$f['error'] )
       {
+		  $log->addEntry(array('comment'=>"File Ok=".$f['tmp_name']));
           $ndelim = $tmppost['import_delimiter'];
+		  $ldelim = $tmppost['import_linedelimiter'];
           switch($ndelim)
           {
             case '1':
-              $delim='\t';
+              $delim="\t";
               break;
             case '2':
-              $delim=';';
+              $delim=";";
               break;
               case '3':
-              $delim=',';
+              $delim=",";
               break;
             case '4':
-              $delim=' ';
+              $delim=" ";
              break;
             default:
               $delim="*";
+              
+          }
+		  switch($ldelim)
+          {
+            case '1':
+              $ldelim="\r\n";
+              break;
+            case '2':
+              $ldelim="\n";
+              break;
+              case '3':
+              $ldelim="\r";
+              break;
+            default:
+              $ldelim="*";
               
           }
           $col = (int)$tmppost['import_column'];
@@ -472,13 +493,35 @@ function saveObject( $task )
           {
               $len=(int)$len;
           } 
-          $handle = @fopen($f['tmpname'], "r");
+		  if (defined('PHP_MAJOR_VERSION') && PHP_MAJOR_VERSION >= 5) 
+		  {
+				$php5=true;
+		  } 
+		  else 
+		 {
+			$php5=false;
+		 }
+    	$nimport=0;	 
+		ini_set(‘auto_detect_line_endings’, true);
+          $handle = @fopen($f['tmp_name'], "rb");
           if ($handle) {
             while (!feof($handle)) {
-              $buffer = fgets($handle, 4096);
+				if ($php5 && $ldelim!="*")
+				{
+					$buffer = stream_get_line($handle, 4096, "\r"); 
+					$log->addEntry(array('comment'=>'stream_get_line('.$ldelim.','.$delim.'):'.$buffer));
+				}
+				else
+				{
+					
+					$buffer = fgets($handle, 4096);
+					$log->addEntry(array('comment'=>'fgets (Col='.$delim.'):'.$buffer));
+				}
               $adr=false;
-              if (strlen($buffer)>0)
+			  
+              if (strlen($buffer)>0 && $buffer)
               {
+				$buffer=rtrim($buffer,"\r\n");
                 if ($delim=="*")
                 {
                   if ($col+$len<strlen($buffer))
@@ -497,19 +540,50 @@ function saveObject( $task )
               }
               if ($adr)
               {
-                $log->addEntry(array('comment'=>'import'.$i."=".$t.".".$n));
+                $log->addEntry(array('comment'=>'import '.$buffer."=".$col.".".$adr.".".$delim));
                 $query = "insert into #__hecmailing_groupdetail (grp_id_groupe,gdet_cd_type,gdet_id_value,gdet_vl_value)
                       values (".$row->grp_id_groupe.",4,0,".$db->Quote( $adr, true ).")";
-          
-                $db->execute($query);
-                $log->addEntry(array('comment'=>"import=".$query));
+				$db->setQuery($query);
+				if (!$db->query())
+				{
+					$log->addEntry(array('comment'=>"Error=".$db->stderr()));
+					$error = "Error Adding email ".adr." from file :".$db->stderr();
+				}
+                else
+				{
+					$log->addEntry(array('comment'=>"import=".$adr." OK(".$query.")"));
                 }
-            
+				$nimport++;
+			}
+            $msgimport = " - ".$nimport." adresses import&eacute;e(s)";
           }
           fclose($handle);
         }
+		else
+		{
+			$error = "Probleme ouverture fichier ".$f['tmp_name']."(".$f['size'].")";
+		}
   
       }
+	  else
+	  {
+		switch ($f['error']){     
+                   case 1: // UPLOAD_ERR_INI_SIZE  
+					
+                   $error="Le fichier dépasse la limite autorisée par le serveur (fichier php.ini) !";     
+                   break;     
+                   case 2: // UPLOAD_ERR_FORM_SIZE     
+                   $error="Le fichier dépasse la limite autorisée dans le formulaire HTML !"; 
+                   break;     
+                   case 3: // UPLOAD_ERR_PARTIAL     
+                   $error="L'envoi du fichier a été interrompu pendant le transfert !";     
+                   break;     
+                   case 4: // UPLOAD_ERR_NO_FILE     
+                   $error="Le fichier que vous avez envoyé a une taille nulle !"; 
+                   break;     
+          }     
+		  $log->addEntry(array('error'=>$error));
+	  }
     }
     
   // Traite permissions
@@ -641,7 +715,7 @@ function saveObject( $task )
 		case 'apply':
 		case 'save2copy':
 			if (!$error)
-				$msg	= JText::_( 'GROUPE SAVED' );
+				$msg	= JText::_( 'GROUPE_SAVED' );
 			else 
 				$msg=$error;
 			$link	= 'index.php?option=com_hecmailing&task=edit&cid[]='. $row->grp_id_groupe .'';
@@ -649,7 +723,7 @@ function saveObject( $task )
 
 		case 'save2new':
 			if (!$error)
-				$msg	= JText::sprintf( 'CHANGES TO X SAVED', 'Group' );
+				$msg	= JText::sprintf( 'CHANGES_TO_X_SAVED', 'Group' );
 			else 
 				$msg=$error;
 			$link	= 'index.php?option=com_hecmailing&task=edit';
@@ -658,7 +732,7 @@ function saveObject( $task )
 		case 'save':
 		default:
 			if (!$error)
-				$msg	= JText::_( 'GROUPE SAVED' );
+				$msg	= JText::_( 'GROUPE_SAVED') .$msgimport;
 			else 
 				$msg=$error;
 			$link	= 'index.php?option=com_hecmailing';

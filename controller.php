@@ -1,6 +1,6 @@
 <?php
 /**
-* @version 1.7.6
+* @version 1.7.8
 * @package hecMailing for Joomla
 * @copyright Copyright (C) 2009 Hecsoft All rights reserved.
 * @license GNU/GPL
@@ -20,6 +20,11 @@
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 *
 * ChangeLog :
+*  1.7.8   25 mar. 2013  Fixe Import problem
+*                        Add support for Mac File import
+*  1.7.7   26 jan. 2013  Fixe Joomla 2.5 send mail problem (real name)
+*                        Fixe Install problem when MySQL is not UTF8 charset
+*                        Fixe IsAdmin problem on J1.6+
 *  1.7.6   30 aug. 2012  Fixe Can't send mail to blocked users
 *                        Feature Add Recipient Name 
 *  1.7.5   06 apr. 2012  Fixe double message when send Contact
@@ -490,8 +495,15 @@ class hecMailingController extends JController
 
         // Are we sending the email as HTML?
         if ( $mode ) { $mail->IsHTML(true);  }
-
-        $mail->addRecipient($recipient);	
+        /*$version = new JVersion();
+    	if ( (real)$version->RELEASE < 2.0 ) {
+    		$recipient= $recipient[1]."<".$recipient[0].">";
+    	   	$mail->addRecipient($recipient);
+    	}
+    	else 
+    	{*/
+    		$mail->AddAddress($recipient[0],$recipient[1]);
+    	//}	
         $mail->addCC($cc);		// add copy email list
         $mail->addBCC($bcc);	// Add masked copy email list
          
@@ -804,8 +816,10 @@ class hecMailingController extends JController
           /* ***PHILOUX*** : ajout du nom du destinataire en plus de son mail
         		if ( $this->sendMail($from, $sender, $email, $subject, $body,true,null,null,$attach,null,null, $inline) !== true )
           */
-          $emailNamed = $elmt[1].' <'.$email.'>';
-        		// Send the email
+          		// Correction pour J2.5
+          		$emailNamed = array($email,$elmt[1]);
+    				
+    			// Send the email
         		if ( $this->sendMail($from, $sender, $emailNamed, $subject, $body,true,null,null,$attach,null,null, $inline) !== true )
         		{
         			// Error while sending email --> Add Error ...

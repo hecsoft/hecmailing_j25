@@ -1,8 +1,8 @@
 <?php
 /**
- * @version 1.7.4 
+ * @version 1.7.8 
  * @package hecmailing
- * @copyright 2009-2012 Hecsoft.net
+ * @copyright 2009-2013 Hecsoft.net
  * @license http://www.gnu.org/licenses/gpl-3.0.html
  * @link http://joomlacode.org/gf/project/userport/
  * @author H Cyr
@@ -276,7 +276,7 @@ class HTML_hecmailing
         <div id="dialog7_msg" class="content"><?php echo JText::_('REMOVE_ALL_SELECTED'); ?></div>
         <div class="buttons"><button onclick="javascript:deleteRowsPerm();return false;"><img src="../components/com_hecmailing/images/ok16.png" ><?php echo JText::_('REMOVE'); ?></button><button onclick="javascript:cancel();return false;"><img src="../components/com_hecmailing/images/cancel16.png" ><?php echo JText::_('CANCEL'); ?></button></div> 
     </div>
-	<form action="index.php" method="post" name="adminForm">
+	<form action="index.php" method="post" name="adminForm" enctype="multipart/form-data">
 		<div class="col">
 			<fieldset class="adminform"><legend><?php echo JText::_( 'GROUP' ); ?></legend>
 			<table class="admintable">
@@ -295,95 +295,83 @@ class HTML_hecmailing
         	</tr></table>	</fieldset>
         	<fieldset class="adminform">
         	<legend><?php echo JText::_( 'DETAIL' ); ?></legend>
-             <button id="btnnewuser" onclick="javascript:showAddNewUser();return false;" ><img src="../components/com_hecmailing/images/user16.png" ><?php echo JText::_( 'NEW_USER' ); ?></button>
-             <button id="btnnewmail" onclick="javascript:showAddNewMail();return false;" ><img src="../components/com_hecmailing/images/email16.png" ><?php echo JText::_( 'NEW_MAIL' ); ?></button>
-             <button id="btnnewgroupe" onclick="javascript:showAddNewGroupe();return false;" ><img src="../components/com_hecmailing/images/group16.png" ><?php echo JText::_( 'NEW_GROUP' ); ?></button>
-             <button id="delete" onclick="javascript:showDeleteEntry();return false;" ><img src="../components/com_hecmailing/images/poubelle16.png" ><?php echo JText::_( 'DELETE' ); ?></button>
-             <button id="btnimport" onclick="javascript:showImport();return false;" ><img src="../components/com_hecmailing/images/email16.png" ><?php echo JText::_( 'IMPORT' ); ?></button>
-             <div id="dialog_import" name="dialog_import" class="hecdialogx" style="display:none;" >
-              <div class="header" ><?php echo JText::_( 'IMPORT_EMAIL' ); ?></div>
-               <div class="content">
-                <table style="width:100%;align:center;"><tr><th><?php echo JText::_('CHOOSE_FILE') ?></th><th><?php echo JText::_('DELIMITER') ?></th>
-                <th><?php echo JText::_('EMAIL_COLUMN') ?></th><th><?php echo JText::_('LENGTH') ?></th><th><?php echo JText::_('MODE') ?></th></tr>
-
-             <tr><td><input type="file" name="import_file" id="import_file" value="" width="95%" /></td>
-
-             <td style="align:center"><select name="import_delimiter" id="import_delimiter"  >
-
-                <option value="1"><?php echo JText::_('DELIMITER_TAB') ?></option>
-
-                <option value="2"><?php echo JText::_('DELIMITER_SEMI_COLON') ?></option>
-
-                <option value="3"><?php echo JText::_('DELIMITER_COLON') ?></option>
-
-                <option value="4"><?php echo JText::_('DELIMITER_SPACE') ?></option>
-
-                <option value="9"><?php echo JText::_('DELIMITER_FIXE') ?></option></select>   </td>
-
-              <td><input name="import_column" id="import_column" size="2" type="text"></td>
-
-              <td><input name="import_len" id="import_len" size="2" type="text"></td>
-
-              <td style="align:center"><select name="import_mode" id="import_mode"  >
-
-                <option value="1"><?php echo JText::_('MODE_APPEND') ?></option>
-
-                <option value="2"><?php echo JText::_('MODE_DELETE') ?></option>
-
-                <option value="3"><?php echo JText::_('MODE_REPLACE') ?></option></select></td>
-
-              </tr></table>
-
-           </div>
-
-            
-
-        </div>
-
-				<table class="adminlist" id="detail">
-
-				<thead>
-
-				  <th class="title"></th><th class="title"><?php echo JText::_('TYPE'); ?></th><th class="title"><?php echo JText::_('NAME'); ?></th>
-
-				</thead>
-
-				<tbody>
-
-				<?php 
-
-				  $i=0;$k=0;
-          if ($detail)
-  				  foreach ($detail as $r)
-            {
-               echo "<tr class=\"row".$k."\"><td><input type=\"checkbox\" name=\"suppress".$i."\" id=\"suppress".$i."\" value=\"".$r[3]."\"></td>";
-               $i++;
-               if ($k==1) $k=0;
-               else  $k=1;
-            switch($r[0])
-            {
-              case 1: 
-                  echo "<td><img src=\"../components/com_hecmailing/images/user16.png\" >".JText::_("USER")."</td><td>".$r[2]."</td>";
-                  break;
-              case 2: 
-                  echo "<td><img src=\"../components/com_hecmailing/images/user16.png\" >".JText::_("USER")."</td><td>".$r[4]."</td>";
-                  break;
-              case 3: 
-                  echo "<td><img src=\"../components/com_hecmailing/images/group16.png\" >".JText::_("GROUP")."</td><td>".$r[5]."</td>";
-                  break;
-              case 4: 
-                  echo "<td><img src=\"../components/com_hecmailing/images/email16.png\" >".JText::_("EMAIL")."</td><td>".$r[2]."</td>";
-                  break;
-            }
-            echo "</tr>";
-          }
-          echo "<input type=\"hidden\" name=\"nbold\" id=\"nbold\" value=\"".$i."\"/>";
-          echo "<input type=\"hidden\" name=\"nbnew\" id=\"nbnew\" value=\"0\"/>";
-          echo "<input type=\"hidden\" name=\"todel\" id=\"todel\" value=\"\"/>";
-          echo "<input type=\"hidden\" name=\"toimport\" id=\"toimport\" value=\"0\"/>";
-        ?>				
-				</tbody>
-				</table>
+				<div class="button">
+					 <button id="btnnewuser" onclick="javascript:showAddNewUser();return false;" ><img src="../components/com_hecmailing/images/user16.png" ><?php echo JText::_( 'NEW_USER' ); ?></button>
+					 <button id="btnnewmail" onclick="javascript:showAddNewMail();return false;" ><img src="../components/com_hecmailing/images/email16.png" ><?php echo JText::_( 'NEW_MAIL' ); ?></button>
+					 <button id="btnnewgroupe" onclick="javascript:showAddNewGroupe();return false;" ><img src="../components/com_hecmailing/images/group16.png" ><?php echo JText::_( 'NEW_GROUP' ); ?></button>
+					 <button id="delete" onclick="javascript:showDeleteEntry();return false;" ><img src="../components/com_hecmailing/images/poubelle16.png" ><?php echo JText::_( 'DELETE' ); ?></button>
+					 <button id="btnimport" onclick="javascript:showImport();return false;" ><img src="../components/com_hecmailing/images/email16.png" ><?php echo JText::_( 'IMPORT' ); ?></button>
+				</div>
+				
+				<div id="dialog_import" name="dialog_import" class="hecdialogx" style="display:none;" >
+					<br/><hr>
+					<div class="header" ><?php echo JText::_( 'IMPORT_EMAIL' ); ?></div>
+					<div class="content">
+						<table style="width:100%;align:center;">
+						<tr><th><?php echo JText::_('CHOOSE_FILE') ?></th><th><?php echo JText::_('DELIMITER') ?></th><th><?php echo JText::_('LINE_DELIMITER') ?></th>
+						<th><?php echo JText::_('EMAIL_COLUMN') ?></th><th><?php echo JText::_('LENGTH') ?></th><th><?php echo JText::_('MODE') ?></th></tr>
+						<tr><td><input type="file" name="import_file" id="import_file" value="" width="95%" /></td>
+						<td style="align:center"><select name="import_delimiter" id="import_delimiter"  >
+							<option value="1"><?php echo JText::_('DELIMITER_TAB') ?></option>
+							<option value="2"><?php echo JText::_('DELIMITER_SEMI_COLON') ?></option>
+							<option value="3"><?php echo JText::_('DELIMITER_COLON') ?></option>
+							<option value="4"><?php echo JText::_('DELIMITER_SPACE') ?></option>
+							<option value="9"><?php echo JText::_('DELIMITER_FIXE') ?></option></select>   
+						</td>
+						<td style="align:center"><select name="import_linedelimiter" id="import_linedelimiter"  >
+							<option value="*" ><?php echo JText::_('LINEDELIMITER_DEFAULT') ?></option>
+							<option value="1"><?php echo JText::_('LINEDELIMITER_WINDOWS') ?></option>
+							<option value="2"><?php echo JText::_('LINEDELIMITER_LINUX') ?></option>
+							<option value="3"><?php echo JText::_('LINEDELIMITER_MAC') ?></option></select>
+						</td>
+						<td><input name="import_column" id="import_column" size="2" type="text" value="0"></td>
+						<td><input name="import_len" id="import_len" size="2" type="text"></td>
+						<td style="align:center"><select name="import_mode" id="import_mode"  >
+							<option value="1"><?php echo JText::_('MODE_APPEND') ?></option>
+							<option value="2"><?php echo JText::_('MODE_DELETE') ?></option>
+							<option value="3"><?php echo JText::_('MODE_REPLACE') ?></option></select>
+						</td>
+						</tr></table>
+					</div>
+				</div>
+				
+				
+					<table class="adminlist" id="detail">
+						<thead><tr><th class="title"></th><th class="title"><?php echo JText::_('TYPE'); ?></th><th class="title"><?php echo JText::_('NAME'); ?></th></tr></thead>
+						<tbody>
+						<?php 
+						  $i=0;$k=0;
+						  if ($detail)
+							foreach ($detail as $r)
+							{
+							   echo "<tr class=\"row".$k."\"><td><input type=\"checkbox\" name=\"suppress".$i."\" id=\"suppress".$i."\" value=\"".$r[3]."\"></td>";
+							   $i++;
+							   if ($k==1) $k=0;
+							   else  $k=1;
+								switch($r[0])
+								{
+								  case 1: 
+									  echo "<td><img src=\"../components/com_hecmailing/images/user16.png\" >".JText::_("USER")."</td><td>".$r[2]."</td>";
+									  break;
+								  case 2: 
+									  echo "<td><img src=\"../components/com_hecmailing/images/user16.png\" >".JText::_("USER")."</td><td>".$r[4]."</td>";
+									  break;
+								  case 3: 
+									  echo "<td><img src=\"../components/com_hecmailing/images/group16.png\" >".JText::_("GROUP")."</td><td>".$r[5]."</td>";
+									  break;
+								  case 4: 
+									  echo "<td><img src=\"../components/com_hecmailing/images/email16.png\" >".JText::_("EMAIL")."</td><td>".$r[2]."</td>";
+									  break;
+								}
+								echo "</tr>";
+							}
+						  echo "<input type=\"hidden\" name=\"nbold\" id=\"nbold\" value=\"".$i."\"/>";
+						  echo "<input type=\"hidden\" name=\"nbnew\" id=\"nbnew\" value=\"0\"/>";
+						  echo "<input type=\"hidden\" name=\"todel\" id=\"todel\" value=\"\"/>";
+						  echo "<input type=\"hidden\" name=\"toimport\" id=\"toimport\" value=\"1\" />";
+				?>				
+						</tbody>
+						</table>
 			</fieldset>
 			<fieldset class="adminform">
 				<legend><?php echo JText::_( 'PERMISSIONS' ); ?></legend>
@@ -392,8 +380,8 @@ class HTML_hecmailing
 				<button id="delete" onclick="javascript:showDeletePermEntry();return false;" ><img src="../components/com_hecmailing/images/poubelle16.png" ><?php echo JText::_( 'DELETE' ); ?></button>
 				<table class="adminlist" id="permissions">
 				<thead>
-				  <th class="title"></th><th class="title"><?php echo JText::_('TYPE'); ?></th><th class="title"><?php echo JText::_('NAME'); ?></th><th class="title"><?php echo JText::_('RIGHT_SEND_MAIL'); ?></th>
-				  <th class="title"><?php echo JText::_('RIGHT_MANAGE'); ?></th><th class="title"><?php echo JText::_('RIGHT_GRANT'); ?></th>
+				  <tr><th class="title"></th><th class="title"><?php echo JText::_('TYPE'); ?></th><th class="title"><?php echo JText::_('NAME'); ?></th><th class="title"><?php echo JText::_('RIGHT_SEND_MAIL'); ?></th>
+				  <th class="title"><?php echo JText::_('RIGHT_MANAGE'); ?></th><th class="title"><?php echo JText::_('RIGHT_GRANT'); ?></th></tr>
 				</thead>
 				<tbody>
 					<?php 

@@ -8,3 +8,15 @@
 
 
 .icon-32-contact  { background-image: url(../../../components/com_hecmailing/images/toolbar/icon-32-contact.png); }
+
+
+/*div.button {
+  width:100%;
+  display:block;
+}*/
+div.import {
+  clear: both;
+}
+.clear {
+  clear: both;
+}

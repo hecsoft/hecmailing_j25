@@ -3,7 +3,7 @@
 defined('_JEXEC') or die('Restricted access');
 
 /**
-* @version 1.7.7
+* @version 1.7.8
 * @package hecMailing for Joomla
 * @copyright Copyright (C) 2008-2011 Hecsoft All rights reserved.
 * @license GNU/GPL
@@ -26,7 +26,7 @@ defined('_JEXEC') or die('Restricted access');
 
 function com_install()
 {
-	$Component_Version="1.7.7";
+	$Component_Version="1.7.8";
     // First make sure that this version of Joomla is 1.5 or greater
     $version = new JVersion();
     if ( (real)$version->RELEASE < 1.5 ) {
@@ -49,7 +49,7 @@ function com_install()
 
     <h2>DESCRIPTION:</h2>
     <p>
-      Ce composant pour joomla 1.5+ (compatible 1.6, 1.7) permet l'envoi de mail a une liste de diffusion par des utilisateurs autoris&eacute;s &acute; partir du frontend.<br>
+      Ce composant pour joomla 1.5+ (compatible 1.6, 1.7, 2.5) permet l'envoi de mail a une liste de diffusion par des utilisateurs autoris&eacute;s &acute; partir du frontend.<br>
       Vous pouvez cr&eacute;er plusieurs groupes. Chaque groupe peut contenir des utilisateur joomla, des groupes joomla ou des adresses e-mail<br>
       Ce composant utilise l'&eacute;diteur par d&eacute;faut et peut envoyer des images (images stock&eacute;es sur votre site ou attach&eacute;es).<br>
       Il est aussi capable d'envoyer des pi&egrave;ces jointes (&agrave; partir de votre disque ou du site)&lt;br&gt;
@@ -57,7 +57,7 @@ function com_install()
     </p>
     <hr>
     <p>
-    	This joomla 1.5+ (1.6 and 1.7 compliant) extension allow authorized user to send html mail to distribution lists (groups) from the frontend.<br>
+    	This joomla 1.5+ (1.6, 1.7 and 2.5 compliant) extension allow authorized user to send html mail to distribution lists (groups) from the frontend.<br>
 			You can create many groups from backend. A group can contain joomla user, joomla group or other e-mail address.<br>
 			This component use default editor and is able to send images (remote image with link or attached!) and have a template system.
 			It can also send attachment (from your local disk or from website)<br>
@@ -88,7 +88,11 @@ function com_install()
     	</i><p>
     <h2>Change Log</h2>
     <p>
-	1.7.7   Corrige le probleme de traduction pour la selection des menu (Anglais et Allemand)<br>
+	1.7.8 Corrige le probl&egrave;me d'Import<br>
+         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Ajout du support de l'import des fichiers MAC<br>
+    1.7.7 Corrige le probl&egrave;me d'envoi de mail avec Joomla 2.5 (Nom r&eacute;el)<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Corrige le probl&egrave; d'installation avec des bases de donn&eacute; non UTF8<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Corrige le probl&egrave; lors de l'obtention de l'information si le user courant est admin en joomla 1.6<br>
 	1.7.6   Corrige le probleme d'envoi aux utilisateurs bloqu&eacute;s<br>
 	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Ajoute le nom du destinataire<br>
 	1.7.5 Corige le probleme de doublonage du message lors de l'envoie d'une demance de contact<br>
@@ -107,9 +111,14 @@ function com_install()
     </p>
 
 	<p><i>
-	1.7.7   Fixe Menu Selection Translation Missing (English and German)<br>
+	1.7.8 Fixe Import problem<br>
+         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Add support for Mac File import<br>
+    
+	1.7.7 Fixe Joomla 2.5 send mail problem (real name)<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Fixe Install problem when MySQL is not UTF8 charset<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Fixe IsAdmin get info on Joomla 1.6+<br>
 	1.7.6   Fixe Can't send mail to blocked users<br>
-                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Feature Add recipient Name <br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Feature Add recipient Name <br>
 	1.7.5   Fixe double message when send Contact<br>
             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Fixe Admin Menu Translation Problem with joomla 1.5<br>
 	1.7.4  Fixe component admin parameter problem on Joomla 1.5.x<br>
