@@ -26,8 +26,11 @@ JArrayHelper::toInteger($cid, array(0));
 require_once( JApplicationHelper::getPath( 'admin_html' ) );
 // Set the table directory
 JTable::addIncludePath(JPATH_ADMINISTRATOR.DS.'components'.DS.'com_hecmailing'.DS.'tables');
-$document->addStyleSheet( JPATH_ADMINISTRATOR.DS.'components'.DS.'com_hecmailing'.DS.'hecmailing.css', 
+if ($task != 'ws-group')
+{
+	$document->addStyleSheet( JPATH_ADMINISTRATOR.DS.'components'.DS.'com_hecmailing'.DS.'hecmailing.css', 
                           'text/css', null, array() );
+}
                           
 switch ($task)
 {
@@ -102,15 +105,15 @@ switch ($task)
     case 'editContact':
     	$idContact 	= JRequest::getVar('contactid', 0, 'get', 'int');
     	editContact($idContact);
-    break;
+		break;
     case 'new_contact':
     case 'newContact':
     	
     	editContact(0);
-    break;
+		break;
     case 'delContact':
-    delContact($cid);
-    break;
+		delContact($cid);
+		break;
     case 'saveContact':
     	saveContact();
     break;
@@ -122,10 +125,16 @@ switch ($task)
        updateComponent();
 
 	    break;
-		case 'param':
+	case 'param':
        showPanel();
-    break;
-default:
+		break;
+	case 'ws-group':
+		$groupType = JRequest::getVar('grouptype', 0, 'get', 'int');
+		$groupId = JRequest::getVar('groupid', 0, 'get', 'int');
+		GroupListWebService($groupType, $groupId);
+		exit;
+		break;
+	default:
            showObjects( $option );
 		break;
 }
@@ -136,7 +145,7 @@ default:
 */
 function showObjects( $option )
 {
-		// Modif Joomla 1.6/1.7+
+	// Modif Joomla 1.6/1.7+
     $mainframe = JFactory::getApplication();
 
 
@@ -229,7 +238,7 @@ function editObject($edit )
 
 	$cid 	= JRequest::getVar('cid', array(0), '', 'array');
 	$option = JRequest::getCmd('option');
-
+	
 	JArrayHelper::toInteger($cid, array(0));
 
 	$row =& JTable::getInstance('groupe', 'Table');
@@ -249,16 +258,18 @@ function editObject($edit )
 	$lists = array();
 	if(version_compare(JVERSION,'1.6.0','<')){
        //Code pour Joomla! 1.5  
-       $query = "Select gd.gdet_cd_type, gd.gdet_id_value, gd.gdet_vl_value,gd.gdet_id_detail, u.name, g.name 
+       $query = "Select gd.gdet_cd_type, gd.gdet_id_value, gd.gdet_vl_value,gd.gdet_id_detail, u.name, g.name ,hg.grp_nm_groupe 
        		From #__hecmailing_groupdetail gd 
   			left join #__users u on gd.gdet_id_value=u.id left join #__core_acl_aro_groups g on g.id=gd.gdet_id_value and gd.gdet_cd_type=3
-   			Where grp_id_groupe=".$cid[0];
+			left join #__hecmailing_groups hg on hg.grp_id_groupe = gd.gdet_id_value and gd.gdet_cd_type=5
+   			Where gd.grp_id_groupe=".$cid[0];
   	}else{
       //Code pour Joomla >= 1.6.0
-      $query = "SELECT gd.gdet_cd_type, gd.gdet_id_value, gd.gdet_vl_value,gd.gdet_id_detail, u.NAME, gn.title 
+      $query = "SELECT gd.gdet_cd_type, gd.gdet_id_value, gd.gdet_vl_value,gd.gdet_id_detail, u.NAME, gn.title,hg.grp_nm_groupe 
 				FROM #__hecmailing_groupdetail gd LEFT JOIN #__users u ON gd.gdet_id_value=u.id  AND gd.gdet_cd_type=2 
 				LEFT JOIN #__usergroups gn ON gd.gdet_id_value=gn.id AND gd.gdet_cd_type=3 
-				WHERE grp_id_groupe=".$cid[0];  
+				left join #__hecmailing_groups hg on hg.grp_id_groupe = gd.gdet_id_value and gd.gdet_cd_type=5
+				WHERE gd.grp_id_groupe=".$cid[0];  
   	}
   
   $db->setQuery($query);
@@ -270,6 +281,7 @@ function editObject($edit )
 		    $query = "Select ifnull(ug.userid,0) as userid, ifnull(ug.groupid,0) as groupid,ug.grp_id_groupe, u.name, g.name  , ug.flag
 		    From #__hecmailing_rights ug 
 		  left join #__users u on ug.userid=u.id left join #__core_acl_aro_groups g on g.id=ug.groupid
+		  
 		   Where ug.grp_id_groupe=".$cid[0];
 	}else{
       //Code pour Joomla >= 1.6.0
@@ -293,6 +305,7 @@ function editObject($edit )
       $ulist[] = JHTML::_('select.option', $u[0], $u[2], 'id', 'name');
     }
 	$users = JHTML::_('select.genericlist',  $ulist, 'newuser', 'class="inputbox" size="1"', 'id', 'name', 0);
+	$usersperm = JHTML::_('select.genericlist',  $ulist, 'newuserperm', 'class="inputbox" size="1"', 'id', 'name', 0);
 	if($edit)
 		$lists['ordering'] 			= JHTML::_('list.specificordering',  $row, $cid[0], $query );
 	else
@@ -315,8 +328,27 @@ else
     	$glist[] = JHTML::_('select.option', $g[0], $g[1], 'id', 'name');
     }
   
-  $groups = JHTML::_('select.genericlist',  $glist, 'newgroupe', 'class="inputbox" size="1"', 'id', 'name', 0);
+  $groups = JHTML::_('select.genericlist',  $glist, 'newgroupej', 'class="inputbox" size="1"', 'id', 'name', 0);
+  $groupsperm = JHTML::_('select.genericlist',  $glist, 'newgroupperm', 'class="inputbox" size="1"', 'id', 'name', 0);
 	
+	
+  $query = "SELECT grp_id_groupe, grp_nm_groupe FROM  #__hecmailing_groups WHERE grp_id_groupe!=".$cid[0]." ORDER BY grp_nm_groupe"; 
+
+  $db->setQuery($query);
+  $grp = $db->loadRowList();
+  $heclist = array();
+  if ($grp) 
+    foreach($grp as $g)
+    {
+    	$heclist[] = JHTML::_('select.option', $g[0], $g[1], 'id', 'name');
+    }
+  
+  $hecgroups = JHTML::_('select.genericlist',  $glist, 'newgroupe', 'class="inputbox" size="1"', 'id', 'name', 0);
+	
+  $typesgroupselmt=array();
+  $typesgroupselmt[] = JHTML::_('select.option', 3, "Joomla", 'id', 'name');
+  $typesgroupselmt[] = JHTML::_('select.option', 5, "HEC MAiling", 'id', 'name');
+  $typesgroups = JHTML::_('select.genericlist',  $typesgroupselmt, 'typegroupe', 'class="inputbox" size="1" onChange="changeType(webservice,this.options[this.selectedIndex].value, '.$cid[0].');"', 'id', 'name', 0);
 	// build the html radio buttons for published
 	$lists['published'] 		= JHTML::_('select.booleanlist',  'published', '', $row->published );
 	
@@ -325,7 +357,7 @@ else
 	$paramstxt="";
 	$params = new JParameter( $paramstxt, $file, 'component' );
 
-	HTML_hecmailing::editObject( $row, $lists, $detail, $params, $users, $groups, $perms );
+	HTML_hecmailing::editObject( $row, $lists, $detail, $params, $users, $groups, $perms, $hecgroups, $typesgroups,$usersperm, $groupsperm  );
 }
 
 /**
@@ -502,7 +534,7 @@ function saveObject( $task )
 			$php5=false;
 		 }
     	$nimport=0;	 
-		ini_set(‘auto_detect_line_endings’, true);
+		ini_set("auto_detect_line_endings", true);
           $handle = @fopen($f['tmp_name'], "rb");
           if ($handle) {
             while (!feof($handle)) {
@@ -643,7 +675,7 @@ function saveObject( $task )
         $l = $n;
         $n=0;
       }
-      $log->addEntry(array('comment'=>'newperm'.$i."=".$t.".".$n));
+      
       if ($t==2)
       { 
       	$u=$n;
@@ -656,10 +688,10 @@ function saveObject( $task )
       }
 	  
 	  $rights=0;
-	  if ($right_send==1) $rights+=1;
-	  if ($right_manage==1) $rights+=2;
-	  if ($right_grant==1) $rights+=4;
-	  
+	  if ($right_send==1 || $right_send=="on") $rights+=1;
+	  if ($right_manage==1 || $right_manage=="on") $rights+=2;
+	  if ($right_grant==1 || $right_grant=="on") $rights+=4;
+	  $log->addEntry(array('comment'=>'newperm'.$i."=".$t.".".$n." => ".$rights. "{".$right_send.",".$right_manage.",".$right_grant."}"));
       /*$query = "insert into #__hecmailing_rights (grp_id_groupe,userid,groupid)
           values (".$row->grp_id_groupe.",".$u.",".$g.")";
       
@@ -697,7 +729,7 @@ function saveObject( $task )
 		
 		if ($tv[1]!="0") {	$query.=" AND userid=".$tv[1]; }
 		else {	$query.=" AND groupid=".$tv[2]; }
-		$log->addEntry(array('comment'=>'update right query'.$query."(".$right.")"));
+		$log->addEntry(array('comment'=>'update right query'.$query." => ".$rights. "{".$right_send.",".$right_manage.",".$right_grant."}"));
 		$db->setQuery($query);
 		if (!$db->query())
 		{
@@ -1202,6 +1234,61 @@ function saveContact( )
 	}
   	
 	$mainframe->redirect( "index.php?option=com_hecmailing&task=contact" ,$msg);
+}
+
+function loadGroupType($group)
+{
+	$path = JPATH_ADMINISTRATOR.DS.'components'.DS.'com_hecmailing'.DS.'groups';
+	$files = JFolder::files($path, $filter = '.', false, true , null);
+	foreach($files as $f)
+	{
+		// read and write a document
+		$xml = new JSimpleXML;
+		$xml->loadFile($f);
+		
+
+	}
+}
+
+function GroupListWebService($groupType, $currentGroup)
+{
+	$type = JRequest::getCmd('group-type');
+	$db =& JFactory::getDBO();
+	switch($groupType)
+	{
+		case 1:
+			if(version_compare(JVERSION,'1.6.0','<')){
+				//Code pour Joomla! 1.5  
+				$query = "Select id, name From #__core_acl_aro_groups order by id";
+			}
+			else 
+			{
+				//Code pour Joomla >= 1.6.0
+				$query = "SELECT id, title FROM  #__usergroups  ORDER BY id";
+			}
+			break;
+		case 5:
+			$query = "Select grp_id_groupe, grp_nm_groupe FROM #__hecmailing_groups WHERE grp_id_groupe!=".$currentGroup." ORDER BY grp_nm_groupe";
+			break;
+	}
+	$db->setQuery( $query );
+	if (!$db->query()) {
+		$data = JText::_('MSG_ERROR_SAVE_CONTACT').':'.$query.'/'.$db->getErrorMsg(true);
+	}
+	else
+		$data = $db->loadRowList();
+	 
+	// Get the document object.
+	$document =& JFactory::getDocument();
+ 
+	// Set the MIME type for JSON output.
+	$document->setMimeEncoding('application/json');
+ 
+	// Change the suggested filename.
+	JResponse::setHeader('Content-Disposition','attachment;filename="group'.$groupType.'.json"');
+ 
+	// Output the JSON data.
+	echo json_encode($data);
 }
 
 function showPanel()

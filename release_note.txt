@@ -1,7 +1,7 @@
 ***************************************************************
-*    HEC Mailing version 1.7.8 release notes                  *
+*    HEC Mailing version 1.8.0 release notes                  *
 *-------------------------------------------------------------*
-* by H.Cyr 5 nov 2009 (updated : 26 jan. 2013 )               *
+* by H.Cyr 5 nov 2009 (updated : 17 apr. 2013 )               *
 * @package hecMailing for Joomla                              *
 * @copyright Copyright (C) 2012 Hecsoft All rights reserved.  *
 * @license GNU/GPL                                            *
@@ -9,6 +9,10 @@
 
 CHANGE LOG
  Version  Date          Changes
+  1.8.0   17 apr. 2013  Use of JQuery for Webservice and Dialogs
+                        Add HECMailing group use in a group (group of group)
+						Change group add (admin). We use a web service for list group detail (joomla or hecmailing)
+                        Simplify javascript code
   1.7.8   25 mar. 2013  Fixe Import problem
                         Add support for Mac File import
   1.7.7   26 jan 2013   Fixe Joomla 2.5 send mail problem (real name)<br>

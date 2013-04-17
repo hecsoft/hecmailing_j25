@@ -62,10 +62,12 @@ $document->addCustomTag ('<link rel="stylesheet" href="components/com_hecmailing
 		<div id="component-hecmailing"></div>
 
 		<table class="toolbar"><tr>
+			<?php if ($this->show_mail_sent) { ?>
 			<td class="button" id="User Toolbar-log">
 				<a href="index.php?option=com_hecmailing" class="toolbar">
 				<span class="icon-32-back" title="<?php echo JText::_('COM_HECMAILING_BACK')?>"></span><?php echo JText::_('COM_HECMAILING_BACK'); ?></a>
 			</td>
+			<?php } ?>
 			<td class="button" id="User Toolbar-log">
 				<a onclick="javascript:dellog();return false;" class="toolbar">
 				<span class="icon-32-delete" title="<?php echo JText::_('COM_HECMAILING_DELETE')?>"></span><?php echo JText::_('COM_HECMAILING_DELETE'); ?></a>

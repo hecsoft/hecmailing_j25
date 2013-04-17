@@ -1,6 +1,6 @@
 <?php
 /**
-* @version 0.13.4
+* @version 1.8.0
 * @package hecMailing for Joomla
 * @subpackage : View Form (Sending mail form)
 * @module views.form.tmpl.view.html.php
@@ -87,7 +87,16 @@ class hecMailingViewForm extends JView
       {
         $askselect=false;
       }
-     
+      if ($pparams->get('show_mail_sent','1')=='1')
+      {
+      	$show_mail_sent = true;
+      
+      }
+      else
+      {
+      	$show_mail_sent = false;
+      }
+       
    	  $send_all =$pparams->get('send_all','0');
    	  $upload_input_count =$pparams->get('attach_input_count','0');
       
@@ -119,7 +128,7 @@ class hecMailingViewForm extends JView
         $saved = JHTML::_('select.genericlist',  $savedlist, 'saved', 'class="inputbox" size="1" ', 'msg_id_message', 'msg_lb_message', intval($idmsg));
       }
       else {
-       $saved="";}  
+       $saved=JText::_("COM_HECMAILING_NO_SAVED_MAIL");;}  
       
       if ($idlog>0)
       {
@@ -155,6 +164,7 @@ class hecMailingViewForm extends JView
   		$msg='';
   		$this->assignRef('msg', $msg);
       $this->assignRef('groupes', $groupes);
+      $this->assignRef('show_mail_sent', $show_mail_sent);
       $this->assignRef('rights', $rights);
       $this->assignRef('from', $from);
       $this->assignRef('default_use_profil', $default_use_profil);

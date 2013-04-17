@@ -9,7 +9,7 @@
  <copyright>(c) Hecsoft 2009-2013</copyright>
  <license>GNU General Public License</license>
  <!--  The version string is recorded in the components table -->
- <version>1.7.8</version>
+ <version>1.8.0</version>
  <!-- The description is optional and defaults to the name -->
  <description>Composant d'envoi de mail (Liste de diffusion) et de contact/ Mailing list and Contact component</description>
  <installfile>install.hecmailing.php</installfile>
@@ -98,17 +98,6 @@
   <filename>css/toolbar.css</filename>
  <filename>css/dialog.css</filename>
   <filename>libraries/index.html</filename>
- <filename>libraries/jt/index.html</filename>
- <filename>libraries/jt/jt_DialogBox.css</filename>
- <filename>libraries/jt/veils.css</filename>
- <filename>libraries/jt/jt_.js</filename>
- <filename>libraries/jt/dom-drag.js</filename>
- <filename>libraries/jt/jt_AppDialogs.js</filename>
- <filename>libraries/jt/jt_DialogBox.js</filename>
- <filename>libraries/jt/dialogTL.gif</filename>
- <filename>libraries/jt/dialogTM.gif</filename>
- <filename>libraries/jt/dialogTR.gif</filename>
- <filename>libraries/jt/window_close.gif</filename>
   <filename>libraries/recaptcha/index.html</filename>
  <filename>libraries/recaptcha/LICENSE</filename>
  <filename>libraries/recaptcha/README</filename>

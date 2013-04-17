@@ -1,6 +1,6 @@
 <?php
 /**
-* @version 1.7.8
+* @version 1.8.0
 * @package hecMailing for Joomla
 * @copyright Copyright (C) 2009 Hecsoft All rights reserved.
 * @license GNU/GPL
@@ -20,6 +20,10 @@
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 *
 * ChangeLog :
+*  1.8.0   31 mar. 2013  Use of JQuery for Webservice and Dialogs
+*                        Add HECMailing group use in a group (group of group)
+*                        Change group add (admin). We use a web service for list group detail (joomla or hecmailing)
+*                        Simplify javascript code
 *  1.7.8   25 mar. 2013  Fixe Import problem
 *                        Add support for Mac File import
 *  1.7.7   26 jan. 2013  Fixe Joomla 2.5 send mail problem (real name)
@@ -302,7 +306,7 @@ class hecMailingController extends JController
        
       //set the template and display it 
       $view->setLayout($layout); 
-      $view->display($tmpl); 
+      $view->display(); 
       
     }
  
@@ -495,17 +499,49 @@ class hecMailingController extends JController
 
         // Are we sending the email as HTML?
         if ( $mode ) { $mail->IsHTML(true);  }
-        /*$version = new JVersion();
-    	if ( (real)$version->RELEASE < 2.0 ) {
-    		$recipient= $recipient[1]."<".$recipient[0].">";
-    	   	$mail->addRecipient($recipient);
-    	}
-    	else 
-    	{*/
-    		$mail->AddAddress($recipient[0],$recipient[1]);
-    	//}	
-        $mail->addCC($cc);		// add copy email list
-        $mail->addBCC($bcc);	// Add masked copy email list
+        if (isset($recipient))
+        {
+	        if (is_array($recipient))
+	        {
+	        	foreach($recipient as $adr)
+	        	{
+	        		$mail->AddAddress($adr[0],$adr[1]);
+	        	}
+	        }
+	        else
+	        {
+	        	$mail->AddAddress($recipient[0],$recipient[1]);
+	        }
+        }
+    		
+    	if (isset($cc))
+        {
+	        if (is_array($cc))
+	        {
+	        	foreach($cc as $adr)
+	        	{
+	        		$mail->addBCC($adr[0],$adr[1]);
+	        	}
+	        }
+	        else
+	        {
+	        	$mail->addBCC($cc[0],$cc[1]);
+	        }
+        }
+        if (isset($bcc))
+        {
+	        if (is_array($bcc))
+	        {
+	        	foreach($bcc as $adr)
+	        	{
+	        		$mail->addBCC($adr[0],$adr[1]);
+	        	}
+	        }
+	        else
+	        {
+	        	$mail->addBCC($bcc[0],$bcc[1]);
+	        }
+        }
          
         // Add embedded images
         foreach ($inline as $att)
@@ -533,29 +569,29 @@ class hecMailingController extends JController
     }
 
 
-    /**
+ 	/**
 	 * Method to send current mail to selected group
 	 *
 	 * @access	public
 	 */
     function send()
-	   {
+	{
 	    $mainframe = &JFactory::getApplication();
-			// Check for request forgeries
-			JRequest::checkToken() or jexit( 'Invalid Token' );
-      //get a refrence of the page instance in joomla 
-      $document=& JFactory::getDocument(); 
-      //get the view name from the query string 
-      $viewName = JRequest::getVar('view', 'form'); 
-	      //get our view 
+		// Check for request forgeries
+		JRequest::checkToken() or jexit( 'Invalid Token' );
+      	//get a refrence of the page instance in joomla 
+      	$document=& JFactory::getDocument(); 
+      	//get the view name from the query string 
+      	$viewName = JRequest::getVar('view', 'form'); 
+	    //get our view 
 	    $viewType= $document->getType(); 
-      $view = &$this->getView('form', $viewType); 
-      $viewName = "form";
-      //get the model 
-      $model = &$this->getModel($viewName, 'ModelhecMailing');
+      	$view = &$this->getView('form', $viewType); 
+      	$viewName = "form";
+      	//get the model 
+      	$model = &$this->getModel($viewName, 'ModelhecMailing');
       
-		     
-		  $session =& JFactory::getSession();
+		$attach_path='';     
+		$session =& JFactory::getSession();
 	    $db	=& JFactory::getDBO();
 	            	
 	    jimport( 'joomla.mail.helper' );
@@ -569,19 +605,18 @@ class hecMailingController extends JController
 	    $params = &JComponentHelper::getParams( 'com_hecmailing' );
 	      		
 		
-		  // An array of e-mail headers we do not want to allow as input
-		  $headers = array (	'Content-Type:',
-								'MIME-Version:',
-								'Content-Transfer-Encoding:',
-								'bcc:',
-								'cc:');
+		// An array of e-mail headers we do not want to allow as input
+		$headers = array (	'Content-Type:',
+							'MIME-Version:',
+							'Content-Transfer-Encoding:',
+							'bcc:',
+							'cc:');
 	
 	    // An array of the input fields to scan for injected headers
 	    $fields = array ('mailto',
-					 'sender',
-					 'from',
-					 'subject',
-				 );
+						 'sender',
+						 'from',
+						 'subject');
 
 	    /*
 	    * Here is the meat and potatoes of the header injection test.  We
@@ -607,24 +642,25 @@ class hecMailingController extends JController
   		 */
   		unset ($headers, $fields);
 
-		  /* Get options from post */    		
-  		$useprofil 		= JRequest::getString('useprofil', 0, 'post');
-  		$image_incorpore 		= JRequest::getString('incorpore', 0, 'post');
-  		$logmail 		= JRequest::getString('backup_mail', 0, 'post');
+		/* Get options from post */    		
+  		$useprofil 		 = JRequest::getString('useprofil', 0, 'post');
+  		$image_incorpore = JRequest::getString('incorpore', 0, 'post');
+  		$logmail 		 = JRequest::getString('backup_mail', 0, 'post');
 		
 		// Get from field and decode name and email from it (from;sender)    		
-  		$fromvalue 				= JRequest::getString('from', $MailFrom.';'.$FromName, 'post');
-			$tmp = split(";" , $fromvalue);
-			$from=$tmp[0];
-			$sender=$tmp[1];
+  		$fromvalue 		 = JRequest::getString('from', $MailFrom.';'.$FromName, 'post');
+		$tmp = explode(";" , $fromvalue);
+		$from=$tmp[0];
+		$sender=$tmp[1];
 			
-			// Get subject and body
+		// Get subject and body
   		$subject_default 	= JText::sprintf('COM_HECMAILING_DEFAULT_SUBJECT', $sender);
   		$subject 			= JRequest::getString('subject', $subject_default, 'post');
-  		$body 			= JRequest::getVar('body', '', 'post', 'string', JREQUEST_ALLOWRAW);
+  		$body 				= JRequest::getVar('body', '', 'post', 'string', JREQUEST_ALLOWRAW);
     	$groupe     		= JRequest::getString('groupe', '', 'post');
+        $sendcount = intval($params->get('send_count', 1));
         
-      // Get attachments
+	    // Get attachments
   		$attach = array();
   		$files = array();
   		$pj_uploaded = array();
@@ -792,51 +828,73 @@ class hecMailingController extends JController
 			$pos=stripos($body," href=\"",$posfin); 
 		}
 		$errors=0;
-		$lstmailok='';
-  	$lstmailerr='';
-    
-    if ($groupe>=0)	// if group selected
-    {
-    	// Get email list from groupe
-        $detail = $model->getMailAdrFromGroupe($groupe,$useprofil);
-        $nb=0;
-        foreach($detail as $elmt)	// send to each email
-        {
-          $email = $elmt[0];
-          // check email
-          if ( ! $email  || ! JMailHelper::isEmailAddress($email) )
-   	   	  {
-    	   		// Bad email --> Add warning and add error counter, but don't send email
-    			$error	= JText::sprintf('COM_HECMAILING_EMAIL_INVALID', $email, $elmt[1]);
-    			JError::raiseWarning(0, $error );
-    			$errors++;
-    	  }
-          else
-          {
-          /* ***PHILOUX*** : ajout du nom du destinataire en plus de son mail
-        		if ( $this->sendMail($from, $sender, $email, $subject, $body,true,null,null,$attach,null,null, $inline) !== true )
-          */
-          		// Correction pour J2.5
-          		$emailNamed = array($email,$elmt[1]);
-    				
-    			// Send the email
-        		if ( $this->sendMail($from, $sender, $emailNamed, $subject, $body,true,null,null,$attach,null,null, $inline) !== true )
-        		{
-        			// Error while sending email --> Add Error ...
-        		    $error	= JText::sprintf('COM_HECMAILING_EMAIL_NOT_SENT', $email, $elmt[1]);
-        			JError::raiseNotice( 500, $error);
-        			$errors++;
-        			$lstmailerr .= $email .';';
-        		}
-        		else
-        		{
-        			// email ok ...
-        			$nb++;
-        			$lstmailok .= $email . ';';
-        		}
-      		}
-        }
-      }
+		$lstmailok=array();
+  		$lstmailerr=array();
+    	$list=array();
+    	
+    	if ($groupe>=0)	// if group selected
+    	{
+	    	// Get email list from groupe
+	        $detail = $model->getMailAdrFromGroupe($groupe,$useprofil);
+	        $nb=0;
+	        foreach($detail as $elmt)	// send to each email
+	        {
+		          $email = $elmt[0];
+		          // check email
+		          if ( ! $email  || ! JMailHelper::isEmailAddress($email) )
+		   	   	  {
+		    	   		// Bad email --> Add warning and add error counter, but don't send email
+		    			$error	= JText::sprintf('COM_HECMAILING_EMAIL_INVALID', $email, $elmt[1]);
+		    			JError::raiseWarning(0, $error );
+		    			$errors++;
+		    	  }
+		          else
+		          {
+		           		// Correction pour J2.5 et envoi par bloc
+		          		$emailNamed = array($email,$elmt[1]);
+		          		$list[] = $emailNamed;
+		    				
+		    			// Send the email
+		    			if (count($list)>= $sendcount)
+		    			{
+			        		if ( $this->sendMail($from, $sender, null, $subject, $body,true,null,$list,$attach,null,null, $inline) !== true )
+			        		{
+			        			// Error while sending email --> Add Error ...
+			        		    $error	= JText::sprintf('COM_HECMAILING_EMAIL_NOT_SENT', $email, count($list));
+			        			JError::raiseNotice( 500, $error);
+			        			$errors+=count($list);
+			        			$lstmailerr = array_merge($lstmailerr,$list);
+			        		}
+			        		else
+			        		{
+			        			// email ok ...
+			        			$nb+=count($list);
+			        			$lstmailok = array_merge($lstmailok,$list);
+			        		}
+			        		$list=array();
+		    			}
+		      		}
+		      }
+		      // Send the email
+		      if (count($list)>= 1)
+		      {
+		      	if ( $this->sendMail($from, $sender, null, $subject, $body,true,null,$list,$attach,null,null, $inline) !== true )
+		      	{
+		      		// Error while sending email --> Add Error ...
+		      		$error	= JText::sprintf('COM_HECMAILING_EMAIL_NOT_SENT', $email, count($list));
+		      		JError::raiseNotice( 500, $error);
+		      		$errors+=count($list);
+		      		$lstmailerr = array_merge($lstmailerr,$list);
+		      	}
+		      	else
+		      	{
+		      		// email ok ...
+		      		$nb+=count($list);
+		      		$lstmailok = array_merge($lstmailok,$list);
+		      	}
+		      	$list=array();
+		      }
+	    }
      
     	// Save sent email if needed
     	if (intval($logmail)==1)
@@ -844,30 +902,30 @@ class hecMailingController extends JController
     		$user =&JFactory::getUser();
     		// Insert email info
     		//Create data object
-        $rowdetail = new JObject();
-        $rowdetail->log_dt_sent = & JFactory::getDate()->toFormat();
-        $rowdetail->log_vl_subject = $subject ;
-        $rowdetail->log_vl_body = $bodytolog  ;
-        $rowdetail->log_vl_from = $from   ;
-        $rowdetail->grp_id_groupe =  $groupe    ;
-        $rowdetail->usr_id_user =  $user->id  ;
-        $rowdetail->log_bl_useprofil =  $useprofil ;
-        $rowdetail->log_nb_ok = $nb  ;
-        $rowdetail->log_nb_errors  =  $errors ;
-        $rowdetail->log_vl_mailok =  $lstmailok  ;
-        $rowdetail->log_vl_mailerr =  $lstmailerr ;
+	        $rowdetail = new JObject();
+	        $rowdetail->log_dt_sent = & JFactory::getDate()->toFormat();
+	        $rowdetail->log_vl_subject = $subject ;
+	        $rowdetail->log_vl_body = $bodytolog  ;
+	        $rowdetail->log_vl_from = $from   ;
+	        $rowdetail->grp_id_groupe =  $groupe    ;
+	        $rowdetail->usr_id_user =  $user->id  ;
+	        $rowdetail->log_bl_useprofil =  $useprofil ;
+	        $rowdetail->log_nb_ok = $nb  ;
+	        $rowdetail->log_nb_errors  =  $errors ;
+	        $rowdetail->log_vl_mailok = join(",", $lstmailok)  ;
+	        $rowdetail->log_vl_mailerr =  join(";",$lstmailerr) ;
         
-      //Insert new record into groupdetail table.
-        $ret = $db->insertObject('#__hecmailing_log', $rowdetail);
+      		//Insert new record into groupdetail table.
+        	$ret = $db->insertObject('#__hecmailing_log', $rowdetail);
     		
     		$logid = $db->insertid(); 
     		// Insert attachments
     		foreach($files as $file)
     		{
     		  $rowfile = new JObject();
-          $rowfile->log_id_message =$logid  ;
-          $rowfile->log_nm_file = $file  ;
-          $ret = $db->insertObject('#__hecmailing_log_attachment', $rowfile);
+	          $rowfile->log_id_message =$logid  ;
+	          $rowfile->log_nm_file = $file  ;
+	          $ret = $db->insertObject('#__hecmailing_log_attachment', $rowfile);
     		}
 	    }
 	    else	// if we don't save sent email we can delete uploaded attachments
@@ -881,7 +939,7 @@ class hecMailingController extends JController
       	else
       		$return = JRoute::_(JURI::base());
   		$this->setRedirect( $return, $msg );
-		}
+	}
 	
   /**
 	 * Method to send current mail to selected group
@@ -1118,4 +1176,4 @@ class hecMailingController extends JController
 	
 	}	
 }
-?> 
+?>

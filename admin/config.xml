@@ -31,12 +31,18 @@
 			<option value="2">YES, IF USER LIST</option>
 			<option value="3">YES, FOR ALL</option>
 		</param>
+		<param name="send_count" type="text" default="1" label="Send mail by block" description="Size of the block of mails for send" />
 		<param name="attach_path" type="text" default="images/stories/hecmailing" label="Attachment path" description="Folder where attachment files will be saved" />
 		<param name="browse_path" type="text" default="images/stories" label="Base browser path" description="Folder can be browsed" />
 		<param name="@spacer" type="spacer" default="" label="" description="" />
 		<param name="edit_width" type="text" default="500" size="5" label="Editor width" description="Width in px of the editor" />
 		<param name="edit_height" type="text" default="400" size="5" label="Editor Height" description="Editor height in pixel" />
 		<param name="attach_input_count" type="text" default="0" size="2" label="Default attachment input count" description="Number of upload input fields by default" />
+		<param name="show_mail_sent" type="radio" default="1" label="Show Mail sent button" description="if YES, show sent email button.">
+			<option value="0">OPTION_NO</option>
+			<option value="1">OPTION_YES</option>
+		</param>
+		
 		<param name="@spacer" type="spacer" default="" label="Contact" description="" />
 		<param name="captcha_use" type="radio" default="1" label="Use captcha?" description="if YES, the captcha will be used">
 			<option value="0">OPTION_NO</option>
@@ -55,7 +61,23 @@
 			<option value="0">OPTION_NO</option>
 			<option value="1">OPTION_YES</option>
 		</param>
+		<param name="debug" type="radio" default="1" label="Debug component" description="if YES, all actions are loggued">
+			<option value="0">OPTION_NO</option>
+			<option value="1">OPTION_YES</option>
+		</param>
 	</params>
+	<fieldset name="general" label="PARAMTAB_GENERAL_LABEL"	description="PARAMTAB_GENERAL_DESC"	>
+		<field name="debug" type="list" default="0" label="DEBUG_LABEL" description="DEBUG_DESC">
+			<option value="0">OPTION_NO</option>
+			<option value="1">OPTION_YES</option>
+			
+		</field>
+		<field name="show_mail_sent" type="list" default="1" label="SHOW_MAIL_SENT_LABEL" description="SHOW_MAIL_SENT_DESC">
+			<option value="0">OPTION_NO</option>
+			<option value="1">OPTION_YES</option>
+			
+		</field>
+	</fieldset>
 	<fieldset name="security"
 		label="PARAMTAB_SECURITY_LABEL"
 		description="PARAMTAB_SECURITY_DESC"
@@ -99,6 +121,8 @@
 			<option value="2">YES_IF_USER</option>
 			<option value="3">YES_FOR_ALL</option>
 		</field>
+		<field name="send_count" type="text" default="1" label="SEND_COUNT_LABEL" description="SEND_COUNT_DESCR"></field>
+		
 	</fieldset>
 	<fieldset name="path"
 		label="PARAMTAB_PATH_LABEL"

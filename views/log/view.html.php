@@ -46,11 +46,22 @@ class hecMailingViewLog extends JView
 		// search filter
 		$lists['search2']= $search;
 		$lists['groups'] = $groupes;
-
+		
+		if ($pparams->get('show_mail_sent','1')=='1')
+		{
+			$show_mail_sent = true;
+		
+		}
+		else
+		{
+			$show_mail_sent = false;
+		}
+		
 		$this->assignRef('logs', $logs);
 		$this->assignRef('groupes', $groupes);
 		$this->assignRef('pagination', $pagination);
 	    $this->assignRef('limitstart', $limitstart);
+	    $this->assignRef('show_mail_sent', $show_mail_sent);
 		$this->assignRef('lists',		$lists);
 		$viewLayout = JRequest::getVar( 'layout', 'default' );
 		$this->_layout = $viewLayout;

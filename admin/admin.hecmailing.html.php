@@ -1,6 +1,6 @@
 <?php
 /**
- * @version 1.7.8 
+ * @version 1.8.0 
  * @package hecmailing
  * @copyright 2009-2013 Hecsoft.net
  * @license http://www.gnu.org/licenses/gpl-3.0.html
@@ -163,7 +163,7 @@ class HTML_hecmailing
  * @param Joomla user list (like Html Select Option)
  * 
  **/        
-	function editObject( &$row, &$lists, $detail, &$params, $users, $jgroups, $perms ) {
+	function editObject( &$row, &$lists, $detail, &$params, $users, $jgroups, $perms, $hecgroups, $grouptype, $usersperm, $jgroupsperm ) {
   		JRequest::setVar( 'hidemainmenu', 1 );
    		if (!isset($row))
    		{
@@ -188,94 +188,107 @@ class HTML_hecmailing
     	$document->addScript($burl."components/com_hecmailing/libraries/jt/jt_AppDialogs.js");
     	$document->addStyleSheet($burl."components/com_hecmailing/libraries/jt/jt_DialogBox.css");
     	$document->addStyleSheet($burl."components/com_hecmailing/libraries/jt/veils.css");
+		$document->addStyleSheet("http://code.jquery.com/ui/1.10.2/themes/smoothness/jquery-ui.css");
     	$document->addScript("components/com_hecmailing/admin.hecmailing.js");
+		$document->addScript("http://code.jquery.com/jquery-1.9.1.js");
+		$document->addScript("http://code.jquery.com/ui/1.10.2/jquery-ui.js");
 ?>
 	<script type="text/javascript">
   <!--
-  		jt_DialogBox.imagePath = '../components/com_hecmailing/libraries/jt/';
-  		jt_DialogBox.imagePath = '<?php echo JURI::base( true ).'/components/com_hecmailing/libraries/jt/';?>';
+  		
+		webservice = '<?php echo JURI::root().'index.php?option=com_hecmailing&task=getgroupcontent';?>';
   		submit_MustName = '<?php echo JText::_( 'YOU_MUST_PROVIDE_A_NAME', true ); ?>';
   		text_user ="<?php echo JText::_('USER', true); ?>";
   		text_mail="<?php echo JText::_('EMAIL', true); ?>";
-  		text_group="<?php echo JText::_('GROUP', true); ?>";
+  		text_joomlagroup="<?php echo JText::_('JOOMLA_GROUP', true); ?>";
+		text_hecmailinggroup="<?php echo JText::_('HECMAILING_GROUP', true); ?>";
   		text_noitem='<?php echo JText::_("NO_SELECTED_ITEM"); ?>';
   		text_wantremove='<?php echo JText::_('WANT_REMOVE', true) ?>';
   		text_items='<?php echo JText::_('ITEMS', true) ?> ';
   		text_perms='<?php echo JText::_('PERMISSIONS', true) ?> ';
   		text_noperm='<?php echo JText::_("NO_SELECTED_PERM_ITEM"); ?>';
+		text_group="<?php echo JText::_('GROUP', true); ?>";
+		
+
   //-->
   </script>
   <LINK rel="stylesheet" type="text/css" href="../components/com_hecmailing/css/dialog.css">
   <div id="dialog_container"></div>
-  <div id="dialog" class="hecdialog" style="display:none;"  >
-  <div id='dialog_title' style="display:none;"><?php echo JText::_( "NEW_USER" ); ?></div>
-  <div class="image"><img src="../components/com_hecmailing/images/user64.png" ></div>
-  <div class="content"><br/><?php echo JText::_('SELECT_USER_BELOW'); ?><br/><br/>
-   <?php echo JText::_('USER')." : ".$users ?></div>
-     <div class="buttons"><button onclick="javascript:addUser();return false;"><img src="../components/com_hecmailing/images/ok16.png" ><?php echo JText::_('ADD'); ?></button><button onclick="javascript:cancel();return false;"><img src="../components/com_hecmailing/images/cancel16.png" ><?php echo JText::_('CANCEL'); ?></button></div> 
-     </div>
-      <div id="dialog2"  class="hecdialog" style="display:none;" >
-      <div id='dialog2_title' style="display:none;"><?php echo JText::_( "NEW_GROUP" ); ?></div>
-         <div class="image" ><img width="64px" src="../components/com_hecmailing/images/group64.png" ></div>
-         <div class="content">
-           <?php echo JText::_('SELECT_GROUP_BELOW') ?><br/><br/>
-           <?php echo JText::_('GROUP')." : ".$jgroups ?>
-         </div>
-         <div class="buttons"><button onclick="javascript:addGroupe();return false;"><img src="../components/com_hecmailing/images/ok16.png" ><?php echo JText::_('ADD'); ?></button><button onclick="javascript:cancel();return false;"><img src="../components/com_hecmailing/images/cancel16.png" ><?php echo JText::_('CANCEL'); ?></button></div> 
-      </div>
-      <div id="dialog3"  class="hecdialog" style="display:none;">
-      <div id='dialog3_title' style="display:none;"><?php echo JText::_( "DELETE" ); ?></div>
+	<div id="dialogUser" style="display:none;" title="<?php echo JText::_( "NEW_USER" ); ?>" >
+		<div class="image"><img src="../components/com_hecmailing/images/user64.png" ></div>
+		<div class="content"><br/>
+			<?php echo JText::_('SELECT_USER_BELOW'); ?><br/><br/>
+			<?php echo JText::_('USER')." : ".$users ?></div><br/>
+			<div class="buttons"><button onclick="javascript:addUser();return false;"><img src="../components/com_hecmailing/images/ok16.png" ><?php echo JText::_('ADD'); ?></button>
+			<button onclick="javascript:cancelUser();return false;"><img src="../components/com_hecmailing/images/cancel16.png" ><?php echo JText::_('CANCEL'); ?></button>
+		</div> 
+	</div>
+      
+      <div id="dialogDelEntry"  style="display:none;" title="<?php echo JText::_( "DELETE" ); ?>">
+      
          <div class="image" ><img width="64px" src="../components/com_hecmailing/images/poubelle64.png" ></div>
-         <div id="dialog3_msg"  class="content"><?php echo JText::_('REMOVE_ALL_SELECTED'); ?></div>
-         <div class="buttons"><button onclick="javascript:deleteRows();return false;"><img src="../components/com_hecmailing/images/ok16.png" ><?php echo JText::_('REMOVE'); ?></button><button onclick="javascript:cancel();return false;"><img src="../components/com_hecmailing/images/cancel16.png" ><?php echo JText::_('CANCEL'); ?></button></div> 
+         <div id="dialogDelEntry_msg"  class="content"><?php echo JText::_('REMOVE_ALL_SELECTED'); ?></div><br/>
+         <div class="buttons"><button onclick="javascript:deleteRows();return false;"><img src="../components/com_hecmailing/images/ok16.png" ><?php echo JText::_('REMOVE'); ?></button>
+		 <button onclick="javascript:cancelDelEntry();return false;"><img src="../components/com_hecmailing/images/cancel16.png" ><?php echo JText::_('CANCEL'); ?></button></div> 
       </div>
-      <div id="dialog4"  class="hecdialog" style="display:none;">
-      	<div id='dialog4_title' style="display:none;"><?php echo JText::_( "NEW_MAIL" ); ?></div>	
+      
+	  <div id="dialogMail"  style="display:none;" title="<?php echo JText::_( "NEW_MAIL" ); ?>">
+      	
          <div class="image" ><img width="64px" src="../components/com_hecmailing/images/email64.png" ></div>
          <div class="content">
            <?php echo JText::_('ENTER_EMAIL_BELOW') ?><br/><br/>
            <?php echo JText::_('EMAIL')." : "?><input type="text" name="newmail" id="newmail" value="" width="95%" />
-         </div>
-         <div class="buttons"><button onclick="javascript:addMail();return false;"><img src="../components/com_hecmailing/images/ok16.png" ><?php echo JText::_('ADD'); ?></button><button onclick="javascript:cancel();return false;"><img src="../components/com_hecmailing/images/cancel16.png" ><?php echo JText::_('CANCEL'); ?></button></div> 
+         </div><br/>
+         <div class="buttons"><button onclick="javascript:addMail();return false;"><img src="../components/com_hecmailing/images/ok16.png" ><?php echo JText::_('ADD'); ?></button>
+		 <button onclick="javascript:cancelMail();return false;"><img src="../components/com_hecmailing/images/cancel16.png" ><?php echo JText::_('CANCEL'); ?></button></div> 
       </div>
-      <div id="dialog5" class="hecdialog"  style="display:none;"  >
-      	<div id='dialog5_title' style="display:none;"><?php echo JText::_( "NEW_USER_PERM" ); ?></div>
-         <div class="image"><img src="../components/com_hecmailing/images/user64.png" ></div>
+      <div id="dialogUserPerm"  style="display:none;"  title="<?php echo JText::_( "NEW_USER_PERM" ); ?>">
+      	 <div class="image"><img src="../components/com_hecmailing/images/user64.png" ></div>
          <div class="content"><br/>
 			<table width="100%"><tr><td colspan="2">
            <?php echo JText::_('SELECT_USER_BELOW'); ?><br/></td></tr>
-		   <tr><td><?php echo JText::_('USER')." : </td><td>".$users ?></td></tr>
+		   <tr><td><?php echo JText::_('USER')." : </td><td>".$usersperm ?></td></tr>
 		   <tr><td colspan="2"><?php echo JText::_('RIGHTS'); ?></td></tr>
-		   <tr><td><?php echo JText::_('RIGHT_SEND_MAIL'). ":"; ?></td><td><input type="checkbox" name="right_send" id="right_send" checked="checked"></td></tr>
-		   <!--<tr><td><?php echo JText::_('RIGHT_EDIT'). ":"; ?></td><td><input type="checkbox" name="right_edit" id="right_edit" ></td></tr>-->
-		   <tr><td><?php echo JText::_('RIGHT_MANAGE'). ":"; ?></td><td><input type="checkbox" name="right_manage" id="right_manage"></td></tr>
-		   <tr><td><?php echo JText::_('RIGHT_GRANT'). ":"; ?></td><td><input type="checkbox" name="right_grant" id="right_grant"></td></tr>
+		   <tr><td><?php echo JText::_('RIGHT_SEND_MAIL'). ":"; ?></td><td><?php echo JText::_('RIGHT_MANAGE'). ":"; ?></td><td><?php echo JText::_('RIGHT_GRANT'). ":"; ?></td></tr>
+		     <tr><td><input type="checkbox" name="right_send" id="right_send" checked="checked" value="1"></td><td><input type="checkbox" name="right_manage" id="right_manage" value="1"></td><td><input type="checkbox" name="right_grant" id="right_grant" value="1"></td></tr>
 		   </table>
-		   </div>
-        <div class="buttons"><button onclick="javascript:addUserPerm();return false;"><img src="../components/com_hecmailing/images/ok16.png" ><?php echo JText::_('ADD'); ?></button><button onclick="javascript:cancel();return false;"><img src="../components/com_hecmailing/images/cancel16.png" ><?php echo JText::_('CANCEL'); ?></button></div> 
+		   </div><br/>
+        <div class="buttons"><button onclick="javascript:addUserPerm();return false;"><img src="../components/com_hecmailing/images/ok16.png" ><?php echo JText::_('ADD'); ?></button>
+		<button onclick="javascript:cancelUserPerm();return false;"><img src="../components/com_hecmailing/images/cancel16.png" ><?php echo JText::_('CANCEL'); ?></button></div> 
    </div>
-   <div id="dialog6" class="hecdialog" style="display:none;" >
-   		<div id='dialog6_title' style="display:none;"><?php echo JText::_( "NEW_GROUP_PERM" ); ?></div>
+   <div id="dialogGroupPerm"  style="display:none;" title="<?php echo JText::_( "NEW_GROUP_PERM" ); ?>" >
         <div class="image" ><img width="64px" src="../components/com_hecmailing/images/group64.png" ></div>
         <div class="content">
 		<table width="100%">
 			<tr><td colspan="2"><?php echo JText::_('SELECT_GROUP_BELOW') ?><br/></td></tr>
-			<tr><td><?php echo JText::_('GROUP')." : </td><td>".$jgroups ?></td></tr>
+			<tr><td><?php echo JText::_('GROUP')." : </td><td>".$jgroupsperm ?></td></tr>
 		<tr><td colspan="2"><?php echo JText::_('RIGHTS'); ?></td></tr>
-		   <tr><td><?php echo JText::_('RIGHT_SEND_MAIL'). ":"; ?></td><td><input type="checkbox" name="rightg_send" id="rightg_send" checked="checked"></td></tr>
-		   <tr><td><?php echo JText::_('RIGHT_MANAGE'). ":"; ?></td><td><input type="checkbox" name="rightg_manage" id="rightg_manage" ></td></tr>
-		   <tr><td><?php echo JText::_('RIGHT_GRANT'). ":"; ?></td><td><input type="checkbox" name="rightg_grant" id="rightg_grant" ></td></tr>
+		   <tr><td><?php echo JText::_('RIGHT_SEND_MAIL'). ":"; ?></td><td><?php echo JText::_('RIGHT_MANAGE'). ":"; ?></td><td><?php echo JText::_('RIGHT_GRANT'). ":"; ?></td></tr>
+		   <tr><td><input type="checkbox" name="rightg_send" id="rightg_send" checked="checked" value="1"></td><td><input type="checkbox" name="rightg_manage" id="rightg_manage" value="1"></td><td><input type="checkbox" name="rightg_grant" id="rightg_grant" value="1"></td></tr>
 		</table>
 		
-        </div>
-        <div class="buttons"><button onclick="javascript:addGroupePerm();return false;"><img src="../components/com_hecmailing/images/ok16.png" ><?php echo JText::_('ADD'); ?></button><button onclick="javascript:cancel();return false;"><img src="../components/com_hecmailing/images/cancel16.png" ><?php echo JText::_('CANCEL'); ?></button></div> 
+        </div><br/>
+        <div class="buttons"><button onclick="javascript:addGroupePerm();return false;"><img src="../components/com_hecmailing/images/ok16.png" ><?php echo JText::_('ADD'); ?></button>
+		<button onclick="javascript:cancelGroupPerm();return false;"><img src="../components/com_hecmailing/images/cancel16.png" ><?php echo JText::_('CANCEL'); ?></button></div> 
    </div>
-   <div id="dialog7"  class="hecdialog" style="display:none;">
-   <div id='dialog7_title' style="display:none;"><?php echo JText::_( "DELETE_PERM" ); ?></div>
+   <div id="dialogDelPerm"   style="display:none;" title="<?php echo JText::_( "DELETE_PERM" ); ?>">
+   
 		<div class="image" ><img width="64px" src="../components/com_hecmailing/images/poubelle64.png" ></div>
-        <div id="dialog7_msg" class="content"><?php echo JText::_('REMOVE_ALL_SELECTED'); ?></div>
-        <div class="buttons"><button onclick="javascript:deleteRowsPerm();return false;"><img src="../components/com_hecmailing/images/ok16.png" ><?php echo JText::_('REMOVE'); ?></button><button onclick="javascript:cancel();return false;"><img src="../components/com_hecmailing/images/cancel16.png" ><?php echo JText::_('CANCEL'); ?></button></div> 
+        <div id="dialogDelPerm_msg" class="content"><?php echo JText::_('REMOVE_ALL_SELECTED'); ?></div><br/>
+        <div class="buttons"><button onclick="javascript:deleteRowsPerm();return false;"><img src="../components/com_hecmailing/images/ok16.png" ><?php echo JText::_('REMOVE'); ?></button>
+		<button onclick="javascript:cancelDelPerm();return false;"><img src="../components/com_hecmailing/images/cancel16.png" ><?php echo JText::_('CANCEL'); ?></button></div> 
     </div>
+	 <div id="dialogGroup"   title="<?php echo JText::_( "NEW_HECMAILING_GROUP" ); ?>" style="display:none;" >
+         <div class="image" ><img width="64px" src="../components/com_hecmailing/images/group64.png" ></div>
+         <div class="content">
+			<?php echo JText::_('SELECT_TYPEGROUP_BELOW') ?><br/>
+           <?php echo JText::_('GROUP')." : ".$grouptype ?><br/><br/>
+           <?php echo JText::_('SELECT_GROUP_BELOW') ?><br/>
+           <?php echo JText::_('GROUP')." : ".$hecgroups ?>
+         </div><br/>
+         <div class="buttons"><button onclick="javascript:addGroupe();return false;"><img src="../components/com_hecmailing/images/ok16.png" ><?php echo JText::_('ADD'); ?></button>
+		 <button onclick="javascript:cancelGroup();return false;"><img src="../components/com_hecmailing/images/cancel16.png" ><?php echo JText::_('CANCEL'); ?></button></div> 
+      </div>
 	<form action="index.php" method="post" name="adminForm" enctype="multipart/form-data">
 		<div class="col">
 			<fieldset class="adminform"><legend><?php echo JText::_( 'GROUP' ); ?></legend>
@@ -357,10 +370,13 @@ class HTML_hecmailing
 									  echo "<td><img src=\"../components/com_hecmailing/images/user16.png\" >".JText::_("USER")."</td><td>".$r[4]."</td>";
 									  break;
 								  case 3: 
-									  echo "<td><img src=\"../components/com_hecmailing/images/group16.png\" >".JText::_("GROUP")."</td><td>".$r[5]."</td>";
+									  echo "<td><img src=\"../components/com_hecmailing/images/group16.png\" >".JText::_("JOOMLA_GROUP")."</td><td>".$r[5]."</td>";
 									  break;
 								  case 4: 
 									  echo "<td><img src=\"../components/com_hecmailing/images/email16.png\" >".JText::_("EMAIL")."</td><td>".$r[2]."</td>";
+									  break;
+								  case 5: 
+									  echo "<td><img src=\"../components/com_hecmailing/images/group16.png\" >".JText::_("HECMAILING_GROUP")."</td><td>".$r[6]."</td>";
 									  break;
 								}
 								echo "</tr>";
@@ -401,7 +417,7 @@ class HTML_hecmailing
 	           			}
             			else
             			{
-            				echo "<td><img src=\"../components/com_hecmailing/images/group16.png\" >".JText::_("GROUP")."</td><td>".$r[4]."</td>";
+            				echo "<td><img src=\"../components/com_hecmailing/images/group16.png\" >".JText::_("JOOMLA_GROUP")."</td><td>".$r[4]."</td>";
             			}
 						$rights=$r[5];
 												

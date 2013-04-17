@@ -1,8 +1,8 @@
 <?php 
 /**
-* @version 1.7.6
+* @version 1.8.0
 * @package hecMailing for Joomla
-* @copyright Copyright (C) 2009 Hecsoft All rights reserved.
+* @copyright Copyright (C) 2013 Hecsoft All rights reserved.
 * @license GNU/GPL
 *
 * This program is free software; you can redistribute it and/or modify
@@ -46,7 +46,7 @@ class ModelhecMailingForm extends JModel
    { 
   	  parent::__construct(); 
    	  $this->params = &JComponentHelper::getParams( 'com_hecmailing' );
-      $this->isLog = $this->params->get('Log');
+      $this->isLog = ($this->params->get('debug') == 1);
       $this->isLog = true;
       if ($this->isLog)
       {
@@ -55,37 +55,81 @@ class ModelhecMailingForm extends JModel
    } 
 
    
-  /**
-	 * Method to write text into component log
-	 *
-	 * @access	public
-	 * @param	string Text to write
-	 */
-   function Log($text)
-   {  
-      if ($this->isLog)
-      {
-        $this->_log->addEntry(array('comment' => $text));
-      }
+/**
+ * Method to write text into component log
+ *
+ * @access	public
+ * @param	string Text to write
+ */
+function Log($text)
+{  
+	if ($this->isLog)
+    {
+    	$this->_log->addEntry(array('comment' => $text));
+    }
+}
+
+/**
+ * @method getGroupeQuery : Return query for a group
+ * @param int $groupe : HECMailing Group Id
+ * @param int $douseprofil : 1 use profil , 0 don't use profil
+ * @param string $blockcond1 : First Block condition
+ * @param string $blockcond2 : 2nd Block condition
+ * @return string
+ */
+   function getGroupeQuery($groupe, $douseprofil, $blockcond1, $blockcond2)
+   {
+		if (intval($douseprofile)==1)
+		  $useprofile= " AND u.sendEmail=1 ";
+		else
+		  $useprofile="";
+	      
+		// Cas des id user joomla
+	    $query = "SELECT email, name
+	              FROM #__users u inner join #__hecmailing_groupdetail gd ON u.id=gd.gdet_id_value AND gd.gdet_cd_type=2
+	              WHERE gd.grp_id_groupe=".$groupe. $useprofile;
+	    // Cas des username
+	    $query .= " UNION SELECT email, name
+	                FROM #__users u inner join #__hecmailing_groupdetail gd ON u.username=gd.gdet_vl_value AND gd.gdet_cd_type=1
+	                WHERE gd.grp_id_groupe=".$groupe. $useprofile;
+	    // Cas des groupes joomla
+	    if(version_compare(JVERSION,'1.6.0','<')){
+		   //Code pour Joomla! 1.5  
+			$query .= " UNION SELECT u.email as email, u.name as name
+						FROM #__users u 
+						inner join #__core_acl_aro c on c.value=u.id
+						inner join #__core_acl_groups_aro_map gm on gm.aro_id=c.id AND c.section_value='users'
+						inner join #__hecmailing_groupdetail gd ON gd.gdet_cd_type=3 AND gd.gdet_id_value=gm.group_id
+						WHERE gd.grp_id_groupe=".$groupe. $useprofile.$blockcond1;
+	      }
+	      else {
+	      	   //Code pour Joomla! 1.6+ 
+            $query .= " UNION SELECT email, name
+	                FROM #__users u inner join #__user_usergroup_map m ON u.id=m.user_id inner join #__hecmailing_groupdetail gd ON m.group_id=gd.gdet_id_value AND gd.gdet_cd_type=3 
+	                WHERE gd.grp_id_groupe=".$groupe. $useprofile.$blockcond1;
+	      }
+	      // Cas des adresse e-mail
+	      $query .= " UNION SELECT gd.gdet_vl_value as email, gd.gdet_vl_value as name
+	                FROM #__hecmailing_groupdetail gd 
+	                WHERE gd.gdet_cd_type=4 AND gd.grp_id_groupe=".$groupe;
+		return $query;
    }
 
-
-
-    /**
-	 * Method to get email list from a group
-	 *
-	 * @access	public
-	 * @param	int Group Identifier
-	 * @param int useprofile => if 1 send email only if JUser sendEmail
-	 *                 field is 1 
-	 * @return array [email,name]     	 
-	 */
-   function getMailAdrFromGroupe($groupe, $useprofile)
-   {
-      $db=$this->getDBO();
-      $block_mode = $this->params->get('send_to_blocked');
-      switch ($block_mode)
-      {
+/**
+* Method to get email list from a group
+*
+* @access	public
+* @param	int Group Identifier
+* @param 	int useprofile => if 1 send email only if JUser sendEmail
+*                 field is 1 
+* @return array [email,name]     	 
+*/
+function getMailAdrFromGroupe($groupe, $douseprofile)
+{
+    $db=$this->getDBO();
+    $block_mode = $this->params->get('send_to_blocked');
+    switch ($block_mode)
+    {
       	case 0:
       		$blockcond1=" AND u.block=0 ";
       		$blockcond2=True;
@@ -102,80 +146,68 @@ class ModelhecMailingForm extends JModel
       		$blockcond1="";
       		$blockcond2=False;
       		break;
-      }
-      if ($groupe>0)
-      {
-      	if (intval($useprofile)==1)
-	          $useprofile= " AND u.sendEmail=1 ";
-	      else
-	          $useprofile="";
-	      // Cas des id user joomla
-	      $query = "SELECT email, name
-	                FROM #__users u inner join #__hecmailing_groupdetail gd ON u.id=gd.gdet_id_value AND gd.gdet_cd_type=2
-	                WHERE gd.grp_id_groupe=".$groupe. $useprofile;
-	      // Cas des username
-	      $query .= " UNION SELECT email, name
-	                FROM #__users u inner join #__hecmailing_groupdetail gd ON u.username=gd.gdet_vl_value AND gd.gdet_cd_type=1
-	                WHERE gd.grp_id_groupe=".$groupe. $useprofile;
-	      // Cas des groupes joomla
-	      if(version_compare(JVERSION,'1.6.0','<')){
-		       //Code pour Joomla! 1.5  
-           /* ***PHILOUX*** : Joomla 1.5.26 : prise en compte des utilisateurs bloques impossible : "u.block=0"
-              ***PHILOUX*** : Joomla 1.5.26 : Groupes Joomla, et ArtOfUsers : tables "core_acl_aro" et "core_acl_groups_aro_map"
-	    	  $query .= " UNION SELECT email, name
-	                FROM #__users u inner join #__hecmailing_groupdetail gd ON u.usertype=gd.gdet_vl_value AND gd.gdet_cd_type=3
-	                WHERE u.block=0 AND gd.grp_id_groupe=".$groupe. $useprofile.$blockcond1;
-           */
-	    	  $query .= " UNION SELECT u.email as email, u.name as name
-	                FROM #__users u 
-                  inner join #__core_acl_aro c on c.value=u.id
-                  inner join #__core_acl_groups_aro_map gm on gm.aro_id=c.id AND c.section_value='users'
-                  inner join #__hecmailing_groupdetail gd ON gd.gdet_cd_type=3 AND gd.gdet_id_value=gm.group_id
-	                WHERE gd.grp_id_groupe=".$groupe. $useprofile.$blockcond1;
-	      }
-	      else {
-	      	   //Code pour Joomla! 1.6+ 
-           /* ***PHILOUX*** : A TESTER : prise en compte des utilisateurs bloques impossible : "u.block=0"
-	                WHERE u.block=0 AND gd.grp_id_groupe=".$groupe. $useprofile.$blockcond1;
-           */
-	    	  $query .= " UNION SELECT email, name
-	                FROM #__users u inner join #__user_usergroup_map m ON u.id=m.user_id inner join #__hecmailing_groupdetail gd ON m.group_id=gd.gdet_id_value AND gd.gdet_cd_type=3
-	                WHERE gd.grp_id_groupe=".$groupe. $useprofile.$blockcond1;
-	      }
-	      // Cas des adresse e-mail
-	      $query .= " UNION SELECT gd.gdet_vl_value as email, gd.gdet_vl_value as name
-	                FROM #__hecmailing_groupdetail gd 
-	                WHERE gd.gdet_cd_type=4 AND gd.grp_id_groupe=".$groupe;
-	    }
-	    else	/* Tous les utilisateurs de la base (Actifs, non block�s) */
-	    {
-	    	if (intval($useprofile)==1)
-	          $useprofile= " WHERE u.sendEmail=1 ".$blockcond2;
-	      else
-	      {
-	      	  if ($blockcond2)
-	      	  {
-	          	$useprofile=" WHERE u.block=0 ";
-	      	  }
-	      	  else
-	      	  {
-	      	  	$useprofile="";
-	      	  }
-	      	  
-	      	}
-	    	$query = "SELECT email, name
-	                FROM #__users u " . $useprofile;
-	    }
-	    
-                              
-      $db->setQuery($query);
-      if (!$rows = $db->loadRowList())
-      {
-          return false;
-      }
+    }
+    if ($groupe>0)
+    {
+      	$query = $this->getGroupeQuery($groupe, $douseprofil, $blockcond1, $blockcond2);
+		
+	}
+	else	/* Tous les utilisateurs de la base (Actifs, non block�s) */
+	{
+		if (intval($useprofile)==1)
+		  $useprofile= " WHERE u.sendEmail=1 ".$blockcond2;
+		else
+		{
+			if ($blockcond2)
+			{
+				$useprofile=" WHERE u.block=0 ";
+			}
+			else
+			{
+				$useprofile="";
+			}
+		  
+		}
+		$query = "SELECT email, name FROM #__users u " . $useprofile;
+	}
+	$db->setQuery($query);
+    if (!$rows = $db->loadRowList())
+    {
+        return false;
+    }
       
-      return $rows;
-   }
+	// Cas des groupes HEC Mailing (groupe de groupe)
+	$query = "SELECT gdet_id_value FROM #__hecmailing_groupdetail 
+				WHERE gdet_cd_type=5 AND grp_id_groupe=".$groupe ;
+
+	$db->setQuery($query);
+	$rowsfromgroupes = array();
+	if ($rows2 = $db->loadRowList())
+	{
+		$rowgrp=array();
+		foreach($rows2 as $item)
+		{
+			
+			$query = $this->getGroupeQuery($item[0], $douseprofil, $blockcond1, $blockcond2);
+			$db->setQuery($query);
+			if ($rowsgrp = $db->loadRowList())
+			{
+				$rowsfromgroupes = array_merge($rowsfromgroupes, $rowsgrp);
+				$this->Log("Append group ".$item[0]. " : ". count($rowsgrp)." email found");
+			}
+		}
+
+		$rows = array_merge($rows,$rowsfromgroupes);
+	}
+	// Supprime les doublons
+	$rowsout=array();
+	foreach($rows as $r)
+	{
+		$rowsout[$r[0]] = $r;
+	}
+	
+    return $rowsout;
+}
 
   /**
 	 * Method to get userType option list
@@ -339,7 +371,7 @@ class ModelhecMailingForm extends JModel
           $db=$this->getDBO();
           $user =&JFactory::getUser();
           $userid = $user->get( 'id' );
-          $listUserTypeAllowed = split(";",$admintype);
+          $listUserTypeAllowed = explode(";",$admintype);
           $query = "select count(*) FROM #__usergroups g LEFT JOIN #__user_usergroup_map AS map ON map.group_id = g.id ";
           $query.= "WHERE map.user_id=".(int) $userid." AND g.title IN ('".join("','",$listUserTypeAllowed)."')";
           $db->setQuery($query);

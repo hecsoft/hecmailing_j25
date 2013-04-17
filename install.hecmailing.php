@@ -26,7 +26,7 @@ defined('_JEXEC') or die('Restricted access');
 
 function com_install()
 {
-	$Component_Version="1.7.8";
+	$Component_Version="1.8.0";
     // First make sure that this version of Joomla is 1.5 or greater
     $version = new JVersion();
     if ( (real)$version->RELEASE < 1.5 ) {
@@ -88,7 +88,11 @@ function com_install()
     	</i><p>
     <h2>Change Log</h2>
     <p>
-	1.7.8 Corrige le probl&egrave;me d'Import<br>
+	1.8.0 Utilisation de jQuery pour les services web et les dialogues<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Possibilit&eacute; d'ajouter un group HECMailing a un autre groupe<br>
+ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Modification ajout de groupe (admin) avec selection du type de groupe (joomla ou hecmailing) et service web pour obtenir le d&eacute;tail du groupe s&eacute;lectionn&eacute;<br>
+ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Simplification du code javascript<br>
+	1.7.8 Corrige le problem d'Import<br>
          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Ajout du support de l'import des fichiers MAC<br>
     1.7.7 Corrige le probl&egrave;me d'envoi de mail avec Joomla 2.5 (Nom r&eacute;el)<br>
         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Corrige le probl&egrave; d'installation avec des bases de donn&eacute; non UTF8<br>
@@ -111,6 +115,10 @@ function com_install()
     </p>
 
 	<p><i>
+	1.8.0 Use of JQuery for Webservice and Dialogs<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Add HECMailing group use in a group (group of group)<br>
+ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Change group add (admin). We use a web service for list group detail (joomla or hecmailing)<br>
+ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Simplify javascript code<br>
 	1.7.8 Fixe Import problem<br>
          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Add support for Mac File import<br>
     
