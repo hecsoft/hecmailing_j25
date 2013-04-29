@@ -9,7 +9,7 @@
  <copyright>(c) Hecsoft 2009-2013</copyright>
  <license>GNU General Public License</license>
  <!--  The version string is recorded in the components table -->
- <version>1.8.0</version>
+ <version>1.8.1</version>
  <!-- The description is optional and defaults to the name -->
  <description>Composant d'envoi de mail (Liste de diffusion) et de contact/ Mailing list and Contact component</description>
  <installfile>install.hecmailing.php</installfile>
@@ -28,6 +28,7 @@
   <filename>views/form/index.html</filename>
   <filename>views/form/metadata.xml</filename>
   <filename>views/form/view.html.php</filename>
+   <filename>views/form/form.js</filename>
   <filename>views/form/tmpl/default.php</filename>
   <filename>views/form/tmpl/default.xml</filename>
   <filename>views/form/tmpl/index.html</filename>

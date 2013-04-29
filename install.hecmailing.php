@@ -26,7 +26,7 @@ defined('_JEXEC') or die('Restricted access');
 
 function com_install()
 {
-	$Component_Version="1.8.0";
+	$Component_Version="1.8.1";
     // First make sure that this version of Joomla is 1.5 or greater
     $version = new JVersion();
     if ( (real)$version->RELEASE < 1.5 ) {
@@ -88,6 +88,7 @@ function com_install()
     	</i><p>
     <h2>Change Log</h2>
     <p>
+	1.8.1 Correction du probl&egrave;me javascript (Fichier form.js manquant dans le package)<br>
 	1.8.0 Utilisation de jQuery pour les services web et les dialogues<br>
         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Possibilit&eacute; d'ajouter un group HECMailing a un autre groupe<br>
  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Modification ajout de groupe (admin) avec selection du type de groupe (joomla ou hecmailing) et service web pour obtenir le d&eacute;tail du groupe s&eacute;lectionn&eacute;<br>
@@ -115,6 +116,7 @@ function com_install()
     </p>
 
 	<p><i>
+	1.8.1 Fixe javascript problem (form.js file missing in package)<br>
 	1.8.0 Use of JQuery for Webservice and Dialogs<br>
         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Add HECMailing group use in a group (group of group)<br>
  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Change group add (admin). We use a web service for list group detail (joomla or hecmailing)<br>
