@@ -1,11 +1,12 @@
 <?php
 /**
- * @version 1.7.8
+ * @version 1.8.2
  * @package hecmailing
  * @copyright 2009-2013 Hecsoft.net
  * @license http://www.gnu.org/licenses/gpl-3.0.html
  * @link http://joomla.hecsoft.net
  * @author H Cyr
+ * @modified 01/06/2013 by H.Cyr
  **/
 
 // no direct access
@@ -121,10 +122,13 @@ switch ($task)
 	
 		showObjects( $option );
 		break;
-		case 'upgrade':
-       updateComponent();
-
+	case 'upgrade':
+       updateComponent(false);
 	    break;
+	case 'upgradetest':
+       updateComponent(true);
+	    break;
+
 	case 'param':
        showPanel();
 		break;
@@ -1300,25 +1304,37 @@ function showPanel()
 }
 
 
-function updateComponent()
+function updateComponent($test)
 {
     global $baseurl;
    	// Modif Joomla 1.6/1.7+
     $mainframe = JFactory::getApplication();
+	
     JLoader::import ( 'helper',JPATH_COMPONENT_ADMINISTRATOR);
     //$baseurl = 'http://joomla.hecsoft.net/media/updater/';
-    $baseurl= "http://hecsoft.planethoster.org/joomla/media/updater/"; 
+	$baseurl= "http://hecsoft.planethoster.org/joomla/media/updater/"; 
+		
+	
     $ver =   getComponentVersion();
-    $latest =    getLatestComponentVersion($baseurl."hecmailing.xml");  
+	if ($test)
+	{
+		$latest =    getLatestComponentVersion($baseurl."hecmailing_test.xml"); 
+	}
+	else
+	{
+		$latest =    getLatestComponentVersion($baseurl."hecmailing.xml");  
+	}
     $msg =  JText::sprintf( 'UPDATED COMPONENT',$ver,$latest ).'<br>';
     $url = $baseurl.'com_hecmailing.'.$latest.'.zip';
     jimport('joomla.installer.helper');
     jimport('joomla.installer.installer');
     $dest=JInstallerHelper::downloadPackage ($url)  ;
-
+	
     if ($dest)
     {
-      $package = JInstallerHelper::unpack(JPATH_ROOT.DS.'tmp'.DS.$dest);
+	  // Modif 1.8.2
+	  $config = JFactory::getConfig();
+      $package = JInstallerHelper::unpack($config->get('tmp_path').DS.$dest);
       if ($package)
       {
          $dir= $package['dir'];
@@ -1345,13 +1361,13 @@ function updateComponent()
      }
      else
      {
-        $msg = "Probleme unpack";
+        $msg = JText::_("UNPACK_ERROR");
         $result=false;
      }
    }
    else
    {
-        $msg= "Probleme download";
+        $msg= JText::_("DOWNLOAD_ERROR");;
         $result=false;
    }
    $mainframe->redirect( "index.php?option=com_hecmailing&task=param" ,$msg);

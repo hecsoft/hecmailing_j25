@@ -20,6 +20,9 @@
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 *
 * ChangeLog :
+*  1.8.2   01 jun. 2013  Correct autoupdate problem
+*                        Correct email address list of email sent is "array" when send by more than one
+*  1.8.1   07 apr. 2013  Correct Package problem
 *  1.8.0   31 mar. 2013  Use of JQuery for Webservice and Dialogs
 *                        Add HECMailing group use in a group (group of group)
 *                        Change group add (admin). We use a web service for list group detail (joomla or hecmailing)
@@ -860,7 +863,7 @@ class hecMailingController extends JController
 			        		if ( $this->sendMail($from, $sender, null, $subject, $body,true,null,$list,$attach,null,null, $inline) !== true )
 			        		{
 			        			// Error while sending email --> Add Error ...
-			        		    $error	= JText::sprintf('COM_HECMAILING_EMAIL_NOT_SENT', $email, count($list));
+			        		    $error	= JText::sprintf('COM_HECMAILING_EMAIL_NOT_SENT', join(";",$list), count($list));
 			        			JError::raiseNotice( 500, $error);
 			        			$errors+=count($list);
 			        			$lstmailerr = array_merge($lstmailerr,$list);
@@ -881,7 +884,7 @@ class hecMailingController extends JController
 		      	if ( $this->sendMail($from, $sender, null, $subject, $body,true,null,$list,$attach,null,null, $inline) !== true )
 		      	{
 		      		// Error while sending email --> Add Error ...
-		      		$error	= JText::sprintf('COM_HECMAILING_EMAIL_NOT_SENT', $email, count($list));
+		      		$error	= JText::sprintf('COM_HECMAILING_EMAIL_NOT_SENT', join(";",$list), count($list));
 		      		JError::raiseNotice( 500, $error);
 		      		$errors+=count($list);
 		      		$lstmailerr = array_merge($lstmailerr,$list);
