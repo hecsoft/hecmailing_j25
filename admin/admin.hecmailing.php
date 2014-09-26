@@ -6,7 +6,6 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html
  * @link http://joomla.hecsoft.net
  * @author H Cyr
- * @modified 01/06/2013 by H.Cyr
  **/
 
 // no direct access
@@ -124,11 +123,12 @@ switch ($task)
 		break;
 	case 'upgrade':
        updateComponent(false);
+
 	    break;
 	case 'upgradetest':
        updateComponent(true);
-	    break;
 
+	    break;
 	case 'param':
        showPanel();
 		break;
@@ -1298,8 +1298,8 @@ function GroupListWebService($groupType, $currentGroup)
 function showPanel()
 {
     global $baseurl;
-    //$baseurl = 'http://joomla.hecsoft.net/media/updater/';
-    $baseurl= "http://hecsoft.planethoster.org/joomla/media/updater/" ;
+    $baseurl = 'http://joomla.hecsoft.net/media/updater/';
+    //$baseurl= "http://hecsoft.planethoster.org/joomla/media/updater/" ;
     HTML_hecmailing::showPanel($baseurl );
 }
 
@@ -1311,14 +1311,12 @@ function updateComponent($test)
     $mainframe = JFactory::getApplication();
 	
     JLoader::import ( 'helper',JPATH_COMPONENT_ADMINISTRATOR);
-    //$baseurl = 'http://joomla.hecsoft.net/media/updater/';
-	$baseurl= "http://hecsoft.planethoster.org/joomla/media/updater/"; 
-		
-	
+    $baseurl = 'http://joomla.hecsoft.net/media/updater/';
+    //$baseurl= "http://hecsoft.planethoster.org/joomla/media/updater/"; 
     $ver =   getComponentVersion();
 	if ($test)
 	{
-		$latest =    getLatestComponentVersion($baseurl."hecmailing_test.xml"); 
+		$latest =    getLatestComponentVersion($baseurl."hecmailing_test.xml");  
 	}
 	else
 	{
@@ -1361,13 +1359,13 @@ function updateComponent($test)
      }
      else
      {
-        $msg = JText::_("UNPACK_ERROR");
+        $msg = "Probleme unpack ".$dest;
         $result=false;
      }
    }
    else
    {
-        $msg= JText::_("DOWNLOAD_ERROR");;
+        $msg= "Probleme download";
         $result=false;
    }
    $mainframe->redirect( "index.php?option=com_hecmailing&task=param" ,$msg);

@@ -26,7 +26,7 @@ defined('_JEXEC') or die('Restricted access');
 
 function com_install()
 {
-	$Component_Version="1.8.2";
+	$Component_Version="1.8.3";
     // First make sure that this version of Joomla is 1.5 or greater
     $version = new JVersion();
     if ( (real)$version->RELEASE < 1.5 ) {
@@ -88,6 +88,7 @@ function com_install()
     	</i><p>
     <h2>Change Log</h2>
     <p>
+	 1.8.3   Correction du probl&egrave;me de log lors d'envoi en group
 	1.8.2 Correction du probl&egrave;me de mise &agrave; jour<br>
       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Permet la mise &agrave; jour avec la version de test<br>
 	1.8.1 Correction du probl&egrave;me javascript (Fichier form.js manquant dans le package)<br>
@@ -118,6 +119,7 @@ function com_install()
     </p>
 
 	<p><i>
+	 1.8.3   Fix group email log problem<br>
 	1.8.2 Fixe Updade problem<br>
       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Allow to Update with Stable or Test version  <br>
 	1.8.1 Fixe javascript problem (form.js file missing in package)<br>

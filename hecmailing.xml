@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<install type="component" version="1.6.0" method="upgrade">
+<install type="component" version="2.5.0" method="upgrade">
  <name>HEC Mailing</name>
  <!-- The following elements are optional and free of formatting conttraints -->
  <creationDate>Apr. 2012</creationDate>
  <author>Herve CYR</author>
  <authorEmail>dev@hecsoft.net</authorEmail>
  <authorUrl>http://www.hecsoft.net</authorUrl>
- <copyright>(c) Hecsoft 2009-2013</copyright>
+ <copyright>(c) Hecsoft 2009-2014</copyright>
  <license>GNU General Public License</license>
  <!--  The version string is recorded in the components table -->
- <version>1.8.2</version>
+ <version>1.8.3</version>
  <!-- The description is optional and defaults to the name -->
  <description>Composant d'envoi de mail (Liste de diffusion) et de contact/ Mailing list and Contact component</description>
  <installfile>install.hecmailing.php</installfile>

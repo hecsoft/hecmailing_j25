@@ -1,5 +1,12 @@
 <?php 
-
+/**
+ * @version 1.8.2
+ * @package hecmailing
+ * @copyright 2009-2013 Hecsoft.net
+ * @license http://www.gnu.org/licenses/gpl-3.0.html
+ * @link http://joomla.hecsoft.net
+ * @author H Cyr
+ **/
 defined('_JEXEC') or die ('restricted access'); 
 
 

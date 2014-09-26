@@ -1,6 +1,6 @@
 <?php
 /**
-* @version 1.8.0
+* @version 1.8.3
 * @package hecMailing for Joomla
 * @copyright Copyright (C) 2009 Hecsoft All rights reserved.
 * @license GNU/GPL
@@ -20,6 +20,7 @@
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 *
 * ChangeLog :
+*  1.8.3   26 sep. 2014  Correct group email problem
 *  1.8.2   01 jun. 2013  Correct autoupdate problem
 *                        Correct email address list of email sent is "array" when send by more than one
 *  1.8.1   07 apr. 2013  Correct Package problem
@@ -915,8 +916,11 @@ class hecMailingController extends JController
 	        $rowdetail->log_bl_useprofil =  $useprofil ;
 	        $rowdetail->log_nb_ok = $nb  ;
 	        $rowdetail->log_nb_errors  =  $errors ;
-	        $rowdetail->log_vl_mailok = join(",", $lstmailok)  ;
-	        $rowdetail->log_vl_mailerr =  join(";",$lstmailerr) ;
+	        $func = function($value) {
+	        	return $value[0];
+	        };
+	        $rowdetail->log_vl_mailok = join(";", array_map($func,$lstmailok))  ;
+	        $rowdetail->log_vl_mailerr =  join(";",array_map($func,$lstmailerr)) ;
         
       		//Insert new record into groupdetail table.
         	$ret = $db->insertObject('#__hecmailing_log', $rowdetail);

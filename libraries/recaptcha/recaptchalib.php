@@ -31,6 +31,8 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
+defined ('_JEXEC') or die ('restricted access'); 
+
 
 /**
  * The reCAPTCHA server URL's

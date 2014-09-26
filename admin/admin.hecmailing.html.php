@@ -653,7 +653,8 @@ class HTML_hecmailing
 	{
 	  JLoader::import ( 'helper',JPATH_COMPONENT_ADMINISTRATOR);
 	  $ver =   getComponentVersion();
-	  $latest =    getLatestComponentVersion($baseurl.'hecmailing.xml');  ?>
+	  $latestProd =    getLatestComponentVersion($baseurl.'hecmailing.xml');  
+	  $latestTest =    getLatestComponentVersion($baseurl.'hecmailing_test.xml');  ?>
 	  <table width="100%">
 	  <tr valign="top"><td>
 	     <fieldset>
@@ -662,17 +663,31 @@ class HTML_hecmailing
 	        <tr><td class="key"><label for="name"><?php echo JText::_( 'VERSION' ); ?>:</label></td>
 	            <td><?php echo $ver; ?></td></tr>
 	       <?php
-	          if ($latest > $ver)
+	          if ($latestProd > $ver)
 	          {     ?>
-	                 <tr><td class="key"><label for="name"><?php echo JText::_( 'LATEST_VERSION' ); ?>:</label></td>
-	                       <td><?php echo $latest; ?>
+	                 <tr><td class="key"><label for="name"><?php echo JText::_( 'LATEST_PROD_VERSION' ); ?>:</label></td>
+	                       <td><?php echo $latestProd; ?>
 	                        <a href="index.php?option=com_hecmailing&task=upgrade" style="color:red"><?php echo JText::_( 'UPGRADE_COMPONENT' ); ?></a></td></tr>
+					
 	       <?php
 	          }
 	          else {
 	          	    ?>
-	                 <tr><td class="key"><label for="name"><?php echo JText::_( 'LATEST_VERSION' ); ?>:</label></td>
-	                       <td><?php echo $latest; ?> <?php echo JText::_( 'UPTODATE_VERSION' ); ?></td></tr>
+	                 <tr><td class="key"><label for="name"><?php echo JText::_( 'LATEST_PROD_VERSION' ); ?>:</label></td>
+	                       <td><?php echo $latestProd; ?> <?php echo JText::_( 'UPTODATE_VERSION' ); ?></td></tr>
+	                <?php
+	          }
+			  if ($latestTest > $ver)
+	          {     ?>
+					<tr><td class="key"><label for="name"><?php echo JText::_( 'LATEST_TEST_VERSION' ); ?>:</label></td>
+	                       <td><?php echo $latestTest; ?>
+	                        <a href="index.php?option=com_hecmailing&task=upgradetest" style="color:red"><?php echo JText::_( 'UPGRADE_COMPONENT' ); ?></a></td></tr>
+							<?php
+	          }
+	          else {
+	          	    ?>
+	                 <tr><td class="key"><label for="name"><?php echo JText::_( 'LATEST_TEST_VERSION' ); ?>:</label></td>
+	                       <td><?php echo $latestTest; ?> <?php echo JText::_( 'UPTODATE_VERSION' ); ?></td></tr>
 	                <?php
 	          }
 	       ?>

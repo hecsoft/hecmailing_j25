@@ -1,14 +1,15 @@
 ***************************************************************
-*    HEC Mailing version 1.8.2 release notes                  *
+*    HEC Mailing version 1.8.3 release notes                  *
 *-------------------------------------------------------------*
-* by H.Cyr 5 nov 2009 (updated : 01 june 2013 )               *
+* by H.Cyr 5 nov 2009 (updated : 26 sep 2014 )                *
 * @package hecMailing for Joomla                              *
-* @copyright Copyright (C) 2012 Hecsoft All rights reserved.  *
+* @copyright Copyright (C) 2014 Hecsoft All rights reserved.  *
 * @license GNU/GPL                                            *
 ***************************************************************
 
 CHANGE LOG
  Version  Date          Changes
+  1.8.3   26 sep. 2014  Correct group email problem
   1.8.2   01 jun. 2013  Fixe Updade problem
                         Allow to Update with Stable or Test version  
   1.8.1   29 apr. 2013  Fixe javascript problem (form.js file missing in package)
